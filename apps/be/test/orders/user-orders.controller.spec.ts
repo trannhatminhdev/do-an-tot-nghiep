@@ -12,6 +12,7 @@ describe('UserOrdersController', () => {
       createOrder: jest.fn(),
       getMyOrders: jest.fn(),
       getOrderById: jest.fn(),
+      getAllOrders: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -35,6 +36,20 @@ describe('UserOrdersController', () => {
       const result = await controller.createOrder(dto);
       expect(result).toEqual(expectedResult);
       expect(service.createOrder).toHaveBeenCalledWith(dto);
+    });
+  });
+
+  describe('lookupOrders', () => {
+    it('should search orders by phone or order id', async () => {
+      const expectedResult = {
+        data: [{ id: 1, customerPhone: '0987654321' }],
+        total: 1,
+      };
+      service.getAllOrders!.mockResolvedValue(expectedResult);
+
+      const result = await controller.lookupOrders('0987654321');
+      expect(result).toEqual(expectedResult);
+      expect(service.getAllOrders).toHaveBeenCalledWith(0, 20, '0987654321');
     });
   });
 

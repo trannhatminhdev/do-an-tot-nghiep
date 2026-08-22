@@ -5,9 +5,9 @@ const resolver = createResolver(import.meta.url);
 
 export default [
   {
-    name: 'user-home',
-    path: '/',
-    file: resolver.resolve('./views/HomeView.vue'),
+    name: 'user-cart',
+    path: '/cart',
+    file: resolver.resolve('./views/CartView.vue'),
     meta: {
       layout: 'user',
     },

@@ -8,7 +8,7 @@ import {
   installModule,
 } from '@nuxt/kit';
 import { setupAdminRoutes } from './runtime/admin/routes';
-import homeRoute from './runtime/user/home/route';
+import { setupUserRoutes } from './runtime/user/routes';
 
 // Module options TypeScript interface definition
 export interface ModuleOptions {
@@ -40,6 +40,14 @@ export default defineNuxtModule<ModuleOptions>({
       options.apiBase ||
       'http://localhost:3000/api/v1';
 
+    // Inject Material Symbols font link
+    nuxt.options.app.head = nuxt.options.app.head || {};
+    nuxt.options.app.head.link = nuxt.options.app.head.link || [];
+    nuxt.options.app.head.link.push({
+      rel: 'stylesheet',
+      href: 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap',
+    });
+
     await installModule('@nuxtjs/tailwindcss', {
       exposeConfig: true,
       config: {
@@ -56,9 +64,11 @@ export default defineNuxtModule<ModuleOptions>({
       });
     });
 
-    // Register composables & services
+    // Register Core composables & services
     addImportsDir(resolver.resolve('./runtime/core/composables'));
     addImportsDir(resolver.resolve('./runtime/core/services'));
+
+    // Register Admin composables & services
     addImportsDir(resolver.resolve('./runtime/admin/auth/composables'));
     addImportsDir(resolver.resolve('./runtime/admin/auth/services'));
     addImportsDir(resolver.resolve('./runtime/admin/categories/composables'));
@@ -72,6 +82,21 @@ export default defineNuxtModule<ModuleOptions>({
     addImportsDir(resolver.resolve('./runtime/admin/reviews/composables'));
     addImportsDir(resolver.resolve('./runtime/admin/reviews/services'));
 
+    // Register User composables & services
+    addImportsDir(resolver.resolve('./runtime/user/composables'));
+    addImportsDir(resolver.resolve('./runtime/user/products/composables'));
+    addImportsDir(resolver.resolve('./runtime/user/products/services'));
+    addImportsDir(resolver.resolve('./runtime/user/categories/composables'));
+    addImportsDir(resolver.resolve('./runtime/user/categories/services'));
+    addImportsDir(resolver.resolve('./runtime/user/cart/composables'));
+    addImportsDir(resolver.resolve('./runtime/user/checkout/services'));
+    addImportsDir(resolver.resolve('./runtime/user/orders/composables'));
+    addImportsDir(resolver.resolve('./runtime/user/orders/services'));
+    addImportsDir(resolver.resolve('./runtime/user/vouchers/composables'));
+    addImportsDir(resolver.resolve('./runtime/user/vouchers/services'));
+    addImportsDir(resolver.resolve('./runtime/user/reviews/composables'));
+    addImportsDir(resolver.resolve('./runtime/user/reviews/services'));
+
     // Do not add the extension since the `.ts` will be transpiled to `.mjs` after `npm run prepack`
     addPlugin(resolver.resolve('./runtime/plugin'));
 
@@ -82,10 +107,16 @@ export default defineNuxtModule<ModuleOptions>({
       },
       'admin',
     );
+    addLayout(
+      {
+        src: resolver.resolve('./runtime/user/layout/UserLayout.vue'),
+      },
+      'user',
+    );
 
     extendPages((pages) => {
       setupAdminRoutes(pages);
-      pages.push(homeRoute);
+      setupUserRoutes(pages);
     });
   },
 });
