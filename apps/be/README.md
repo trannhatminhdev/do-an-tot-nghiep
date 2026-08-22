@@ -1,98 +1,78 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# AI Commerce Backend (NestJS)
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Backend API phục vụ hệ thống thương mại điện tử AI Commerce, được xây dựng trên nền tảng **NestJS** theo kiến trúc **Hexagonal Architecture (Ports & Adapters)** và **Prisma ORM**.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🏗️ Cấu trúc thư mục
 
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
-
-```bash
-$ pnpm install
+```
+apps/be/
+├── src/
+│   ├── main.ts                          # Bootstrap entry point (global pipes, interceptors, CORS)
+│   ├── app.module.ts                    # Root module kết nối Core và Feature modules
+│   ├── core/                            # Tầng dùng chung của hệ thống
+│   │   ├── database/                    # PrismaModule & PrismaService
+│   │   ├── guards/                      # JwtAuthGuard, RolesGuard
+│   │   ├── decorators/                  # Roles, CurrentUser decorators
+│   │   └── filters/                     # Global HttpExceptionFilter
+│   ├── modules/                         # Feature Modules (Hexagonal Architecture)
+│   │   ├── auth/                        # Xác thực, JWT, Admin & User auth
+│   │   ├── products/                    # Quản lý sản phẩm (User storefront & Admin CRUD)
+│   │   ├── categories/                  # Danh mục sản phẩm
+│   │   ├── orders/                      # Đặt hàng, giỏ hàng, cập nhật trạng thái đơn
+│   │   ├── vouchers/                    # Mã giảm giá, kiểm tra áp dụng voucher
+│   │   └── reviews/                     # Đánh giá & phản hồi sản phẩm
+│   └── shared/                          # Shared DTOs, Enums, Utilities
+├── prisma/
+│   ├── schema.prisma                    # Prisma Database Schema (SQLite / PostgreSQL)
+│   └── migrations/                      # Lịch sử migration
+└── test/                                # Unit & E2E Tests (Jest)
 ```
 
-## Compile and run the project
-
-```bash
-# development
-$ pnpm run start
-
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
+### Cấu trúc một Feature Module theo Hexagonal Architecture:
+```
+modules/<feature>/
+├── <feature>.module.ts                  # NestJS Module & DI bindings
+├── application/
+│   ├── interfaces/                      # Ports (Repository & Service interfaces)
+│   └── services/                        # Use Cases / Business logic
+├── domain/
+│   └── entities/                        # Domain entities
+├── infrastructure/
+│   └── repositories/                    # Adapters (Prisma repository implementations)
+└── presentation/
+    └── http/                            # HTTP Controllers & DTOs
+        ├── <feature>.controller.ts
+        ├── admin-<feature>.controller.ts
+        └── dtos/
 ```
 
-## Run tests
+## 🚀 Các tính năng chính (API Modules)
+
+- **Auth Module**: Đăng nhập/Đăng ký người dùng, Đăng nhập Admin, JWT Access/Refresh tokens, phân quyền `ADMIN` và `USER`.
+- **Products Module**: Quản lý sản phẩm, lọc theo danh mục, tìm kiếm full-text, phân trang, quản lý kho hàng.
+- **Categories Module**: Quản lý phân cấp danh mục, danh mục cha-con.
+- **Orders Module**: Tạo đơn hàng, tính toán tổng tiền, kiểm tra tồn kho, cập nhật trạng thái đơn hàng và thanh toán.
+- **Vouchers Module**: Tạo và áp dụng mã khuyến mãi theo giá trị phần trăm hoặc số tiền cố định, kiểm tra điều kiện đơn hàng tối thiểu.
+- **Reviews Module**: Đánh giá sản phẩm kèm xếp hạng sao (1-5 sao) và bình luận.
+
+---
+
+## 🛠️ Hướng dẫn phát triển (Development)
 
 ```bash
-# unit tests
-$ pnpm run test
+# 1. Chạy Backend ở chế độ development
+pnpm --filter be start:dev
 
-# e2e tests
-$ pnpm run test:e2e
+# 2. Chạy Prisma migrations
+pnpm --filter be prisma migrate dev
 
-# test coverage
-$ pnpm run test:cov
+# 3. Mở Prisma Studio để xem dữ liệu
+pnpm --filter be prisma studio
+
+# 4. Chạy Unit Tests (Jest)
+pnpm --filter be test
+
+# 5. Chạy Test với Coverage
+pnpm --filter be test:cov
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).

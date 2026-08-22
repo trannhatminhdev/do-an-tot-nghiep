@@ -49,28 +49,35 @@ defineProps({
 </script>
 ```
 
-### 3. Cấu trúc Nuxt Module
+### 3. Cấu trúc Nuxt Module (Feature-Driven Modular Architecture)
 
-- Mọi runtime code PHẢI nằm trong `apps/fe/src/runtime/`
-- Mọi component/composable/plugin PHẢI được đăng ký trong `apps/fe/src/module.ts`
-- Test tính năng trong `apps/fe/playground/`, không sửa trực tiếp `src/`
+- Mọi runtime code PHẢI nằm trong `apps/fe/src/runtime/`:
+  - `core/`: Chứa global components (prefix `App`), shared composables, `api.service.ts`, core types.
+  - `admin/<feature>/`: Feature modules của Admin Portal (`views/`, `services/`, `composables/`, `types/`, `constants.ts`, `route.ts`).
+  - `user/<feature>/`: Feature modules của Storefront (`views/`, `route.ts`, ...).
+- Mọi composable và service PHẢI được đăng ký qua `addImportsDir` trong `apps/fe/src/module.ts`.
+- Mọi route PHẢI được khai báo qua `extendPages` trong `apps/fe/src/module.ts`.
+- Test trong `apps/fe/test/` (Vitest) và kiểm tra tương tác tại `apps/fe/playground/`.
 
 ### 4. Naming Convention
 
 | Loại | Convention | Ví dụ |
 |------|-----------|-------|
-| Component file | PascalCase | `ProductCard.vue` |
-| Composable file | camelCase với prefix `use` | `useCart.ts` |
-| Utility file | camelCase | `formatPrice.ts` |
-| Component tag | PascalCase | `<ProductCard />` |
+| Core Component file | PascalCase với prefix `App` | `AppModal.vue`, `AppPagination.vue`, `AppTable.vue` |
+| View / Page component | PascalCase với suffix `View` | `AdminProductsView.vue`, `AdminOrderDetailView.vue` |
+| Composable file | camelCase với prefix `use` | `useAdminProducts.ts`, `useToast.ts` |
+| Service file | kebab-case với suffix `.service.ts` | `admin-products.service.ts`, `api.service.ts` |
+| Type definition file | kebab-case với suffix `.types.ts` | `product.types.ts`, `api.types.ts` |
+| Route file | kebab-case | `route.ts`, `routes.ts` |
 
-### 5. Composables
+### 5. Composables & Services Pattern
 
-- Tên composable PHẢI bắt đầu bằng `use` (VD: `useCart`, `useProduct`)
-- Composable PHẢI return một object (không return array)
-- Đặt trong `src/runtime/composables/`
+- Tên composable PHẢI bắt đầu bằng `use` (VD: `useAdminProducts`, `useAdminOrders`).
+- Composable PHẢI return một object (không return array).
+- Services đóng vai trò gọi API thông qua `apiService` singleton, trả về `Promise<T>`.
+- Composable quản lý `state`, `loading`, `error`, `pagination` và gọi qua Service.
 
 ### 6. State Management
 
-- Ưu tiên sử dụng composables + `useState()` (Nuxt built-in) cho shared state
-- Chỉ dùng Pinia nếu state management phức tạp vượt quá khả năng composables
+- Ưu tiên sử dụng composables + `useState()` / `ref()` cho reactive state.
+- Sử dụng `useToast()` cho hiển thị thông báo phản hồi thao tác người dùng.
