@@ -274,13 +274,17 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { definePageMeta } from '#imports';
+import { definePageMeta, useHead } from '#imports';
 import { useAdminReviews } from '#fe/admin/reviews/composables/useAdminReviews';
 import type { Review } from '#fe/admin/reviews/types/review.types';
 import { useToast } from '#fe/core/composables/useToast';
 
 definePageMeta({
   layout: 'admin',
+});
+
+useHead({
+  title: 'Quản lý đánh giá - TechPulse Admin',
 });
 
 const {

@@ -140,13 +140,17 @@
 
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue';
-import { definePageMeta } from '#imports';
+import { definePageMeta, useHead } from '#imports';
 import { useAdminProducts } from '#fe/admin/products/composables/useAdminProducts';
 import { useAdminCategories } from '#fe/admin/categories/composables/useAdminCategories';
 import { useImageUrl } from '#fe/core/composables/useImageUrl';
 import type { Product } from '#fe/admin/products/types/product.types';
 
 definePageMeta({ layout: 'admin' });
+
+useHead({
+  title: 'Quản lý sản phẩm - TechPulse Admin',
+});
 
 const {
   currentPage,

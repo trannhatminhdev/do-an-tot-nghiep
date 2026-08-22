@@ -227,7 +227,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, reactive, computed } from 'vue';
-import { useRoute, useRouter, definePageMeta } from '#imports';
+import { useRoute, useRouter, definePageMeta, useHead } from '#imports';
 
 import { useAdminProducts } from '#fe/admin/products/composables/useAdminProducts';
 import { useAdminCategories } from '#fe/admin/categories/composables/useAdminCategories';
@@ -259,6 +259,11 @@ const isEditMode = computed(
     route.path.includes('/admin/products/') &&
     route.path !== '/admin/products/create',
 );
+
+useHead({
+  title: () =>
+    `${isEditMode.value ? 'Chỉnh sửa sản phẩm' : 'Thêm sản phẩm mới'} - TechPulse Admin`,
+});
 const productId = computed(() =>
   isEditMode.value ? Number(route.params.id) : null,
 );

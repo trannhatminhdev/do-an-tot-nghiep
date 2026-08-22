@@ -148,10 +148,14 @@
 
 <script setup lang="ts">
 import { onMounted, watch } from 'vue';
-import { definePageMeta } from '#imports';
+import { definePageMeta, useHead } from '#imports';
 import { useAdminOrders } from '#fe/admin/orders/composables/useAdminOrders';
 
 definePageMeta({ layout: 'admin' });
+
+useHead({
+  title: 'Quản lý đơn hàng - TechPulse Admin',
+});
 
 const {
   orders,

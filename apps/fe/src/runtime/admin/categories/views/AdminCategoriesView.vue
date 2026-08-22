@@ -349,12 +349,16 @@
 
 <script setup lang="ts">
 import { ref, onMounted, nextTick } from 'vue';
-import { definePageMeta } from '#imports';
+import { definePageMeta, useHead } from '#imports';
 import { useAdminCategories } from '#fe/admin/categories/composables/useAdminCategories';
 import type { Category } from '#fe/admin/categories/types/category.types';
 
 definePageMeta({
   layout: 'admin',
+});
+
+useHead({
+  title: 'Quản lý danh mục - TechPulse Admin',
 });
 
 const {

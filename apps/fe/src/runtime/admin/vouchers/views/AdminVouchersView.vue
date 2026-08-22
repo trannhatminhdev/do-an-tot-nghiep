@@ -254,7 +254,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, nextTick, watch } from 'vue';
-import { definePageMeta } from '#imports';
+import { definePageMeta, useHead } from '#imports';
 import { useAdminVouchers } from '#fe/admin/vouchers/composables/useAdminVouchers';
 import type {
   Voucher,
@@ -263,6 +263,10 @@ import type {
 
 definePageMeta({
   layout: 'admin',
+});
+
+useHead({
+  title: 'Quản lý Voucher - TechPulse Admin',
 });
 
 const {

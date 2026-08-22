@@ -200,7 +200,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
-import { useRoute, definePageMeta } from '#imports';
+import { useRoute, definePageMeta, useHead } from '#imports';
 import { useAdminOrders } from '#fe/admin/orders/composables/useAdminOrders';
 import { useImageUrl } from '#fe/core/composables/useImageUrl';
 
@@ -214,6 +214,11 @@ const {
   fetchOrderById,
   updateOrderStatus,
 } = useAdminOrders();
+
+useHead({
+  title: () =>
+    `${currentOrder.value ? `Chi tiết đơn hàng #${currentOrder.value.id}` : 'Chi tiết đơn hàng'} - TechPulse Admin`,
+});
 
 const orderId = computed(() => Number(route.params.id));
 

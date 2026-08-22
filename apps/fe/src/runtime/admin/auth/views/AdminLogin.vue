@@ -277,7 +277,12 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useHead } from '#imports';
 import { useAdminAuth } from '#fe/admin/auth/composables/useAdminAuth';
+
+useHead({
+  title: 'Đăng nhập - TechPulse Admin',
+});
 
 const email = ref('');
 const password = ref('');
