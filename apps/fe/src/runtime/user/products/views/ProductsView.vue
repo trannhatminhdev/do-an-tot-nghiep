@@ -4,6 +4,7 @@ import { useRoute, useRouter } from '#app';
 import { useUserProducts } from '../composables/useUserProducts';
 import { useUserCategories } from '../../categories/composables/useUserCategories';
 import { useUserCart } from '../../cart/composables/useUserCart';
+import { useImageUrl } from '#fe/core/composables/useImageUrl';
 
 const route = useRoute();
 const router = useRouter();
@@ -112,11 +113,11 @@ const displayedProducts = computed(() => {
   <div class="max-w-[1280px] mx-auto px-4 md:px-10 py-6">
     <!-- Breadcrumbs -->
     <nav class="flex items-center gap-2 mb-6 text-sm text-gray-500">
-      <NuxtLink to="/" class="hover:text-primary transition-colors"
+      <NuxtLink to="/" class="hover:text-[#0052cc] transition-colors"
         >Trang chủ</NuxtLink
       >
       <span class="material-symbols-outlined text-sm">chevron_right</span>
-      <span class="text-on-surface font-medium capitalize">{{
+      <span class="text-gray-900 font-medium capitalize">{{
         currentCategoryTitle
       }}</span>
     </nav>
@@ -130,10 +131,10 @@ const displayedProducts = computed(() => {
           <div
             class="flex items-center justify-between pb-3 border-b border-gray-100"
           >
-            <h2 class="text-base font-bold text-on-surface">Bộ lọc</h2>
+            <h2 class="text-base font-bold text-gray-900">Bộ lọc</h2>
             <button
               v-if="selectedCategoryId !== null || selectedPriceRange !== 'all'"
-              class="text-xs text-primary font-semibold hover:underline cursor-pointer"
+              class="text-xs text-[#0052cc] font-semibold hover:underline cursor-pointer"
               @click="
                 updateFilter(null);
                 selectedPriceRange = 'all';
@@ -155,7 +156,7 @@ const displayedProducts = computed(() => {
                 class="text-left py-2 px-3 rounded-xl transition-colors cursor-pointer text-xs font-semibold"
                 :class="
                   selectedCategoryId === null
-                    ? 'text-primary font-bold bg-blue-50'
+                    ? 'text-[#0052cc] font-bold bg-blue-50'
                     : 'text-gray-600 hover:bg-gray-50'
                 "
                 @click="updateFilter(null)"
@@ -168,66 +169,13 @@ const displayedProducts = computed(() => {
                 class="text-left py-2 px-3 rounded-xl transition-colors cursor-pointer text-xs font-semibold"
                 :class="
                   selectedCategoryId === cat.id
-                    ? 'text-primary font-bold bg-blue-50'
+                    ? 'text-[#0052cc] font-bold bg-blue-50'
                     : 'text-gray-600 hover:bg-gray-50'
                 "
                 @click="updateFilter(cat.id)"
               >
                 {{ cat.name }}
               </button>
-            </div>
-          </div>
-
-          <!-- Price Filter -->
-          <div>
-            <h3
-              class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-3"
-            >
-              Khoảng giá
-            </h3>
-            <div
-              class="flex flex-col gap-2.5 text-xs font-semibold text-gray-700"
-            >
-              <label class="flex items-center gap-3 cursor-pointer group">
-                <input
-                  v-model="selectedPriceRange"
-                  type="radio"
-                  name="priceRange"
-                  value="all"
-                  class="text-primary focus:ring-primary h-4 w-4"
-                />
-                <span class="group-hover:text-primary">Tất cả mức giá</span>
-              </label>
-              <label class="flex items-center gap-3 cursor-pointer group">
-                <input
-                  v-model="selectedPriceRange"
-                  type="radio"
-                  name="priceRange"
-                  value="under10"
-                  class="text-primary focus:ring-primary h-4 w-4"
-                />
-                <span class="group-hover:text-primary">Dưới 10 triệu</span>
-              </label>
-              <label class="flex items-center gap-3 cursor-pointer group">
-                <input
-                  v-model="selectedPriceRange"
-                  type="radio"
-                  name="priceRange"
-                  value="10to20"
-                  class="text-primary focus:ring-primary h-4 w-4"
-                />
-                <span class="group-hover:text-primary">10 - 20 triệu</span>
-              </label>
-              <label class="flex items-center gap-3 cursor-pointer group">
-                <input
-                  v-model="selectedPriceRange"
-                  type="radio"
-                  name="priceRange"
-                  value="above20"
-                  class="text-primary focus:ring-primary h-4 w-4"
-                />
-                <span class="group-hover:text-primary">Trên 20 triệu</span>
-              </label>
             </div>
           </div>
         </div>
@@ -240,7 +188,7 @@ const displayedProducts = computed(() => {
           class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6"
         >
           <div>
-            <h1 class="text-2xl font-black text-on-surface">
+            <h1 class="text-2xl font-black text-gray-900">
               {{ currentCategoryTitle }}
               <span class="text-xs font-normal text-gray-400"
                 >({{ total }} sản phẩm)</span
@@ -248,7 +196,7 @@ const displayedProducts = computed(() => {
             </h1>
             <p v-if="searchQuery" class="text-xs text-gray-500 mt-1">
               Kết quả tìm kiếm cho:
-              <span class="font-bold text-primary">"{{ searchQuery }}"</span>
+              <span class="font-bold text-[#0052cc]">"{{ searchQuery }}"</span>
             </p>
           </div>
 
@@ -256,7 +204,7 @@ const displayedProducts = computed(() => {
             <span class="text-xs text-gray-500 hidden sm:inline">Sắp xếp:</span>
             <select
               v-model="sortOption"
-              class="border border-gray-200 rounded-xl bg-white text-xs font-semibold py-2 px-3 focus:ring-2 focus:ring-primary focus:border-primary outline-none cursor-pointer"
+              class="border border-gray-200 rounded-xl bg-white text-xs font-semibold py-2 px-3 focus:ring-2 focus:ring-[#0052cc] focus:border-[#0052cc] outline-none cursor-pointer text-gray-900"
             >
               <option value="newest">Mới nhất</option>
               <option value="price-asc">Giá: Thấp đến Cao</option>
@@ -268,7 +216,7 @@ const displayedProducts = computed(() => {
         <!-- Loading State -->
         <div v-if="isLoading" class="flex justify-center items-center py-20">
           <span
-            class="animate-spin material-symbols-outlined text-4xl text-primary"
+            class="animate-spin material-symbols-outlined text-4xl text-[#0052cc]"
             >progress_activity</span
           >
         </div>
@@ -281,14 +229,14 @@ const displayedProducts = computed(() => {
           <span class="material-symbols-outlined text-5xl text-gray-300 mb-3"
             >search_off</span
           >
-          <h3 class="text-lg font-bold mb-1">
+          <h3 class="text-lg font-bold mb-1 text-gray-900">
             Không tìm thấy sản phẩm phù hợp
           </h3>
           <p class="text-xs text-gray-500 mb-4">
             Vui lòng thử điều chỉnh lại bộ lọc hoặc từ khóa tìm kiếm.
           </p>
           <button
-            class="bg-primary text-white text-xs font-bold px-6 py-2.5 rounded-xl cursor-pointer shadow-md"
+            class="bg-[#0052cc] hover:bg-[#0040a2] text-white text-xs font-bold px-6 py-2.5 rounded-xl cursor-pointer shadow-md transition-colors"
             @click="
               updateFilter(null);
               selectedPriceRange = 'all';
@@ -306,7 +254,7 @@ const displayedProducts = computed(() => {
           <div
             v-for="product in displayedProducts"
             :key="product.id"
-            class="bg-white border border-gray-200 rounded-3xl p-5 flex flex-col hover:shadow-xl hover:border-primary/30 transition-all duration-300 group"
+            class="bg-white border border-gray-200 rounded-3xl p-5 flex flex-col hover:shadow-xl hover:border-[#0052cc]/30 transition-all duration-300 group"
           >
             <!-- Badge & Image -->
             <NuxtLink
@@ -315,7 +263,7 @@ const displayedProducts = computed(() => {
             >
               <img
                 :src="
-                  product.images?.[0]?.imageUrl ||
+                  useImageUrl(product.images?.[0]?.imageUrl) ||
                   'https://placehold.co/400x400?text=TechPulse'
                 "
                 :alt="product.name"
@@ -323,7 +271,7 @@ const displayedProducts = computed(() => {
               />
               <div
                 v-if="product.discountPercent"
-                class="absolute top-3 left-3 bg-error text-white text-[11px] font-bold px-2.5 py-1 rounded-lg shadow-sm"
+                class="absolute top-3 left-3 bg-[#ef4444] text-white text-[11px] font-bold px-2.5 py-1 rounded-lg shadow-sm"
               >
                 -{{ product.discountPercent }}%
               </div>
@@ -331,7 +279,7 @@ const displayedProducts = computed(() => {
 
             <NuxtLink
               :to="`/products/${product.id}`"
-              class="font-bold text-base mb-2 text-on-surface group-hover:text-primary transition-colors line-clamp-2 cursor-pointer"
+              class="font-bold text-base mb-2 text-gray-900 group-hover:text-[#0052cc] transition-colors line-clamp-2 cursor-pointer"
             >
               {{ product.name }}
             </NuxtLink>
@@ -341,7 +289,7 @@ const displayedProducts = computed(() => {
               class="mt-auto pt-3 border-t border-gray-100 flex items-end justify-between"
             >
               <div>
-                <div class="text-lg font-black text-primary">
+                <div class="text-lg font-black text-[#0052cc]">
                   {{ formatPrice(product.price) }}
                 </div>
                 <div
@@ -355,7 +303,7 @@ const displayedProducts = computed(() => {
 
             <!-- Add to Cart CTA -->
             <button
-              class="mt-4 w-full bg-primary hover:bg-[#0040a2] text-white font-bold text-xs py-3 rounded-xl transition-all flex justify-center items-center gap-2 shadow-sm cursor-pointer"
+              class="mt-4 w-full bg-[#0052cc] hover:bg-[#0040a2] text-white font-bold text-xs py-3 rounded-xl transition-all flex justify-center items-center gap-2 shadow-sm cursor-pointer"
               @click="addToCart(product)"
             >
               <span class="material-symbols-outlined text-base"
@@ -385,7 +333,7 @@ const displayedProducts = computed(() => {
             class="w-10 h-10 flex items-center justify-center rounded-xl text-xs font-bold transition-all cursor-pointer"
             :class="
               currentPage === p
-                ? 'bg-primary text-white shadow-md'
+                ? 'bg-[#0052cc] text-white shadow-md'
                 : 'border border-gray-200 text-gray-700 hover:bg-gray-50'
             "
             @click="handlePageChange(p)"

@@ -25,12 +25,12 @@ const orderId = computed(() => {
     </div>
 
     <div class="space-y-2">
-      <h1 class="text-2xl md:text-3xl font-extrabold text-on-surface">
+      <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900">
         Đặt Hàng Thành Công!
       </h1>
       <p class="text-gray-500 text-xs md:text-sm">
         Cảm ơn bạn đã tin tưởng mua sắm tại TechPulse. Mã đơn hàng của bạn là
-        <span class="font-black text-primary">{{ orderId }}</span
+        <span class="font-black text-[#0052cc]">{{ orderId }}</span
         >.
       </p>
     </div>
@@ -42,7 +42,7 @@ const orderId = computed(() => {
       <div
         class="flex items-center gap-2 font-bold text-gray-800 border-b border-gray-100 pb-2.5"
       >
-        <span class="material-symbols-outlined text-primary text-lg"
+        <span class="material-symbols-outlined text-[#0052cc] text-lg"
           >local_shipping</span
         >
         <span>Thông tin giao hàng &amp; xử lý</span>
@@ -63,7 +63,7 @@ const orderId = computed(() => {
       <NuxtLink
         v-if="rawOrderId"
         :to="`/orders?search=${rawOrderId}`"
-        class="bg-primary text-white font-bold text-xs px-7 py-3.5 rounded-xl hover:bg-[#0040a2] transition-colors cursor-pointer shadow-md"
+        class="bg-[#0052cc] text-white font-bold text-xs px-7 py-3.5 rounded-xl hover:bg-[#0040a2] transition-colors cursor-pointer shadow-md"
       >
         Theo dõi đơn hàng này
       </NuxtLink>

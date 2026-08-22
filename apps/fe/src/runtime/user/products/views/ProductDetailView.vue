@@ -4,6 +4,7 @@ import { useRoute, useRouter } from '#app';
 import { useUserProducts } from '../composables/useUserProducts';
 import { useUserReviews } from '../../reviews/composables/useUserReviews';
 import { useUserCart } from '../../cart/composables/useUserCart';
+import { useImageUrl } from '#fe/core/composables/useImageUrl';
 
 const route = useRoute();
 const router = useRouter();
@@ -92,25 +93,25 @@ function handleBuyNow() {
   <div class="max-w-[1280px] mx-auto px-4 md:px-10 py-6 pb-24 space-y-10">
     <!-- Breadcrumb -->
     <nav class="flex items-center gap-2 text-xs text-gray-500">
-      <NuxtLink to="/" class="hover:text-primary transition-colors"
+      <NuxtLink to="/" class="hover:text-[#0052cc] transition-colors"
         >Trang chủ</NuxtLink
       >
       <span class="material-symbols-outlined text-xs">chevron_right</span>
-      <NuxtLink to="/products" class="hover:text-primary transition-colors"
+      <NuxtLink to="/products" class="hover:text-[#0052cc] transition-colors"
         >Sản phẩm</NuxtLink
       >
       <span v-if="activeProduct?.category" class="flex items-center gap-2">
         <span class="material-symbols-outlined text-xs">chevron_right</span>
         <NuxtLink
           :to="`/products?categoryId=${activeProduct.category.id}`"
-          class="hover:text-primary transition-colors"
+          class="hover:text-[#0052cc] transition-colors"
         >
           {{ activeProduct.category.name }}
         </NuxtLink>
       </span>
       <span class="material-symbols-outlined text-xs">chevron_right</span>
       <span
-        class="text-on-surface font-medium truncate max-w-[200px] md:max-w-none"
+        class="text-gray-900 font-medium truncate max-w-[200px] md:max-w-none"
       >
         {{ activeProduct?.name || 'Chi tiết' }}
       </span>
@@ -121,7 +122,7 @@ function handleBuyNow() {
       v-if="isProductLoading && !activeProduct"
       class="flex justify-center items-center py-24"
     >
-      <span class="animate-spin material-symbols-outlined text-4xl text-primary"
+      <span class="animate-spin material-symbols-outlined text-4xl text-[#0052cc]"
         >progress_activity</span
       >
     </div>
@@ -134,13 +135,13 @@ function handleBuyNow() {
       <span class="material-symbols-outlined text-6xl text-gray-300"
         >inventory_2</span
       >
-      <h2 class="text-xl font-bold text-on-surface">Không tìm thấy sản phẩm</h2>
+      <h2 class="text-xl font-bold text-gray-900">Không tìm thấy sản phẩm</h2>
       <p class="text-xs text-gray-500">
         Sản phẩm có thể đã ngừng kinh doanh hoặc đường dẫn không đúng.
       </p>
       <NuxtLink
         to="/products"
-        class="inline-block bg-primary text-white font-bold text-xs px-6 py-2.5 rounded-xl shadow-md"
+        class="inline-block bg-[#0052cc] text-white font-bold text-xs px-6 py-2.5 rounded-xl shadow-md hover:bg-[#0040a2] transition-colors"
       >
         Khám phá sản phẩm khác
       </NuxtLink>
@@ -157,9 +158,10 @@ function handleBuyNow() {
           >
             <img
               :src="
-                activeProduct.images?.[selectedImageIndex]?.imageUrl ||
-                activeProduct.images?.[0]?.imageUrl ||
-                'https://placehold.co/600x600?text=TechPulse'
+                useImageUrl(
+                  activeProduct.images?.[selectedImageIndex]?.imageUrl ||
+                    activeProduct.images?.[0]?.imageUrl
+                ) || 'https://placehold.co/600x600?text=TechPulse'
               "
               :alt="activeProduct.name"
               class="w-full h-full object-contain drop-shadow-lg transition-all duration-300"
@@ -193,13 +195,13 @@ function handleBuyNow() {
               class="w-20 h-20 rounded-2xl bg-white border-2 p-2 flex items-center justify-center overflow-hidden transition-all cursor-pointer flex-shrink-0"
               :class="
                 selectedImageIndex === idx
-                  ? 'border-primary ring-2 ring-primary/20'
+                  ? 'border-[#0052cc] ring-2 ring-[#0052cc]/20'
                   : 'border-gray-200 hover:border-gray-300'
               "
               @click="selectedImageIndex = idx"
             >
               <img
-                :src="img.imageUrl"
+                :src="useImageUrl(img.imageUrl)"
                 :alt="activeProduct.name"
                 class="w-full h-full object-contain"
               />
@@ -212,12 +214,12 @@ function handleBuyNow() {
           <div>
             <span
               v-if="activeProduct.category"
-              class="text-xs font-bold text-primary uppercase tracking-wider block mb-1"
+              class="text-xs font-bold text-[#0052cc] uppercase tracking-wider block mb-1"
             >
               {{ activeProduct.category.name }}
             </span>
             <h1
-              class="text-2xl md:text-3xl font-extrabold text-on-surface leading-tight"
+              class="text-2xl md:text-3xl font-extrabold text-gray-900 leading-tight"
             >
               {{ activeProduct.name }}
             </h1>
@@ -233,7 +235,7 @@ function handleBuyNow() {
           <div
             class="bg-blue-50/50 border border-blue-100 rounded-3xl p-6 flex items-baseline gap-4"
           >
-            <span class="text-3xl md:text-4xl font-black text-primary">{{
+            <span class="text-3xl md:text-4xl font-black text-[#0052cc]">{{
               formatPrice(activeProduct.price)
             }}</span>
             <span
@@ -244,7 +246,7 @@ function handleBuyNow() {
             </span>
             <span
               v-if="activeProduct.discountPercent"
-              class="bg-error text-white font-bold text-xs px-2.5 py-1 rounded-lg"
+              class="bg-[#ef4444] text-white font-bold text-xs px-2.5 py-1 rounded-lg"
             >
               Tiết kiệm {{ activeProduct.discountPercent }}%
             </span>
@@ -257,17 +259,17 @@ function handleBuyNow() {
               class="flex items-center bg-gray-50 rounded-xl border border-gray-200"
             >
               <button
-                class="w-9 h-9 flex items-center justify-center text-gray-600 hover:text-primary active:bg-gray-200 rounded-l-xl cursor-pointer"
+                class="w-9 h-9 flex items-center justify-center text-gray-600 hover:text-[#0052cc] active:bg-gray-200 rounded-l-xl cursor-pointer"
                 @click="quantity = Math.max(1, quantity - 1)"
               >
                 <span class="material-symbols-outlined text-sm">remove</span>
               </button>
               <span
-                class="w-12 text-center font-bold text-sm text-on-surface"
+                class="w-12 text-center font-bold text-sm text-gray-900"
                 >{{ quantity }}</span
               >
               <button
-                class="w-9 h-9 flex items-center justify-center text-primary active:bg-gray-200 rounded-r-xl cursor-pointer"
+                class="w-9 h-9 flex items-center justify-center text-[#0052cc] active:bg-gray-200 rounded-r-xl cursor-pointer"
                 @click="
                   quantity = Math.min(activeProduct.stock || 99, quantity + 1)
                 "
@@ -281,7 +283,7 @@ function handleBuyNow() {
           <div class="flex flex-col sm:flex-row gap-4 pt-4">
             <button
               :disabled="activeProduct.stock <= 0"
-              class="flex-1 bg-white border-2 border-primary text-primary hover:bg-blue-50 font-bold text-sm py-4 rounded-2xl transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40"
+              class="flex-1 bg-white border-2 border-[#0052cc] text-[#0052cc] hover:bg-blue-50 font-bold text-sm py-4 rounded-2xl transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40"
               @click="handleAddToCart"
             >
               <span class="material-symbols-outlined text-xl"
@@ -291,7 +293,7 @@ function handleBuyNow() {
             </button>
             <button
               :disabled="activeProduct.stock <= 0"
-              class="flex-1 bg-primary hover:bg-[#0040a2] text-white font-bold text-sm py-4 rounded-2xl transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40"
+              class="flex-1 bg-[#0052cc] hover:bg-[#0040a2] text-white font-bold text-sm py-4 rounded-2xl transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40"
               @click="handleBuyNow"
             >
               Mua ngay
@@ -305,7 +307,7 @@ function handleBuyNow() {
           <div
             class="bg-gray-50 border border-gray-200 rounded-2xl p-4 flex items-center gap-3.5 text-xs text-gray-600"
           >
-            <span class="material-symbols-outlined text-primary text-2xl"
+            <span class="material-symbols-outlined text-[#0052cc] text-2xl"
               >local_shipping</span
             >
             <div>
@@ -326,8 +328,8 @@ function handleBuyNow() {
         v-if="(activeProduct.specifications || []).length > 0"
         class="bg-white border border-gray-200 rounded-3xl p-6 md:p-10 shadow-sm space-y-6"
       >
-        <h2 class="text-xl font-bold text-on-surface flex items-center gap-2">
-          <span class="material-symbols-outlined text-primary">tune</span>
+        <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+          <span class="material-symbols-outlined text-[#0052cc]">tune</span>
           Thông số kỹ thuật
         </h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -340,7 +342,7 @@ function handleBuyNow() {
               class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1"
               >{{ spec.specName }}</span
             >
-            <span class="text-sm font-bold text-on-surface">{{
+            <span class="text-sm font-bold text-gray-900">{{
               spec.specValue
             }}</span>
           </div>
@@ -355,13 +357,13 @@ function handleBuyNow() {
           class="flex flex-wrap justify-between items-center gap-4 border-b border-gray-100 pb-4"
         >
           <div>
-            <h2 class="text-xl font-bold text-on-surface">Đánh giá sản phẩm</h2>
+            <h2 class="text-xl font-bold text-gray-900">Đánh giá sản phẩm</h2>
             <p class="text-xs text-gray-500 mt-0.5">
               Nhận xét thực tế từ khách hàng đã trải nghiệm sản phẩm
             </p>
           </div>
           <button
-            class="bg-primary text-white text-xs font-bold px-5 py-2.5 rounded-xl hover:bg-[#0040a2] transition-colors cursor-pointer shadow-md"
+            class="bg-[#0052cc] text-white text-xs font-bold px-5 py-2.5 rounded-xl hover:bg-[#0040a2] transition-colors cursor-pointer shadow-md"
             @click="handleOpenReviewModal"
           >
             Viết đánh giá
@@ -370,7 +372,7 @@ function handleBuyNow() {
 
         <div v-if="isReviewsLoading" class="flex justify-center py-8">
           <span
-            class="animate-spin material-symbols-outlined text-2xl text-primary"
+            class="animate-spin material-symbols-outlined text-2xl text-[#0052cc]"
             >progress_activity</span
           >
         </div>
@@ -397,12 +399,12 @@ function handleBuyNow() {
             <div class="flex justify-between items-start">
               <div class="flex items-center gap-3">
                 <div
-                  class="w-9 h-9 rounded-full bg-primary/10 text-primary font-bold flex items-center justify-center text-xs"
+                  class="w-9 h-9 rounded-full bg-blue-100 text-[#0052cc] font-bold flex items-center justify-center text-xs"
                 >
                   {{ (rev.user?.fullName || 'K').charAt(0).toUpperCase() }}
                 </div>
                 <div>
-                  <div class="text-xs font-bold text-on-surface">
+                  <div class="text-xs font-bold text-gray-900">
                     {{ rev.user?.fullName || 'Khách hàng' }}
                   </div>
                   <div class="text-[11px] text-gray-400">
@@ -430,7 +432,7 @@ function handleBuyNow() {
               v-if="rev.adminReply"
               class="bg-blue-50 border border-blue-100 p-3 rounded-xl mt-2 text-xs"
             >
-              <span class="font-bold text-primary block mb-0.5"
+              <span class="font-bold text-[#0052cc] block mb-0.5"
                 >Phản hồi từ TechPulse:</span
               >
               <p class="text-gray-600">{{ rev.adminReply }}</p>
@@ -450,7 +452,7 @@ function handleBuyNow() {
           <div
             class="flex justify-between items-center border-b border-gray-100 pb-3"
           >
-            <h3 class="text-base font-bold">Đánh giá sản phẩm</h3>
+            <h3 class="text-base font-bold text-gray-900">Đánh giá sản phẩm</h3>
             <button
               class="text-gray-400 hover:text-gray-700 cursor-pointer"
               @click="isReviewModalOpen = false"
@@ -486,14 +488,14 @@ function handleBuyNow() {
                 v-model="newComment"
                 rows="3"
                 placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này..."
-                class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-xs outline-none focus:border-primary focus:bg-white transition-colors"
+                class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-xs outline-none focus:border-[#0052cc] focus:bg-white transition-colors"
               ></textarea>
             </div>
           </div>
 
           <button
             :disabled="isSubmittingReview || !newComment.trim()"
-            class="w-full bg-primary text-white font-bold py-3 rounded-xl hover:bg-[#0040a2] transition-colors cursor-pointer shadow-md disabled:opacity-40 text-xs flex items-center justify-center gap-2"
+            class="w-full bg-[#0052cc] text-white font-bold py-3 rounded-xl hover:bg-[#0040a2] transition-colors cursor-pointer shadow-md disabled:opacity-40 text-xs flex items-center justify-center gap-2"
             @click="submitReview"
           >
             <span

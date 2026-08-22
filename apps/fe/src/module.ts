@@ -51,10 +51,68 @@ export default defineNuxtModule<ModuleOptions>({
     await installModule('@nuxtjs/tailwindcss', {
       exposeConfig: true,
       config: {
+        darkMode: 'class',
         content: {
           files: [resolver.resolve('./runtime/**/*.{vue,mjs,ts}')],
         },
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                DEFAULT: '#0052CC',
+                hover: '#0040A2',
+                50: '#EBF3FF',
+                100: '#D6E6FF',
+                200: '#ADC8FF',
+                300: '#85AAFF',
+                400: '#5C8DFF',
+                500: '#0052CC',
+                600: '#0040A2',
+                700: '#00307A',
+              },
+              error: {
+                DEFAULT: '#EF4444',
+                500: '#EF4444',
+                600: '#DC2626',
+              },
+              surface: '#FFFFFF',
+              'inverse-surface': '#0B1120',
+              'on-surface': '#0F172A',
+              'on-surface-variant': '#64748B',
+            },
+          },
+        },
       },
+    });
+
+    nuxt.hook('tailwindcss:config', (tailwindConfig: any) => {
+      tailwindConfig.darkMode = 'class';
+      tailwindConfig.theme = tailwindConfig.theme || {};
+      tailwindConfig.theme.extend = tailwindConfig.theme.extend || {};
+      tailwindConfig.theme.extend.colors = {
+        ...tailwindConfig.theme.extend.colors,
+        primary: {
+          DEFAULT: '#0052CC',
+          hover: '#0040A2',
+          50: '#EBF3FF',
+          100: '#D6E6FF',
+          200: '#ADC8FF',
+          300: '#85AAFF',
+          400: '#5C8DFF',
+          500: '#0052CC',
+          600: '#0040A2',
+          700: '#00307A',
+        },
+        error: {
+          DEFAULT: '#EF4444',
+          500: '#EF4444',
+          600: '#DC2626',
+        },
+        surface: '#FFFFFF',
+        'inverse-surface': '#0B1120',
+        'on-surface': '#0F172A',
+        'on-surface-variant': '#64748B',
+      };
     });
 
     nuxt.hook('components:dirs', (dirs) => {

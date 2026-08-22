@@ -3,6 +3,7 @@ import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { useUserProducts } from '../../products/composables/useUserProducts';
 import { useUserCategories } from '../../categories/composables/useUserCategories';
 import { useUserCart } from '../../cart/composables/useUserCart';
+import { useImageUrl } from '#fe/core/composables/useImageUrl';
 
 const { products, fetchProducts, formatPrice, isLoading } = useUserProducts();
 const { categories, fetchCategories } = useUserCategories();
@@ -102,7 +103,7 @@ const discountedProducts = computed(() => {
           class="md:col-span-8 lg:col-span-7 bg-white/10 backdrop-blur-md border border-white/10 rounded-3xl p-6 md:p-12 shadow-2xl"
         >
           <div
-            class="inline-flex items-center space-x-2 px-4 py-1.5 bg-primary/30 border border-primary/40 rounded-full mb-6"
+            class="inline-flex items-center space-x-2 px-4 py-1.5 bg-[#0052cc]/30 border border-[#0052cc]/40 rounded-full mb-6"
           >
             <span
               class="w-2 h-2 rounded-full bg-[#0ea5e9] animate-pulse"
@@ -133,7 +134,7 @@ const discountedProducts = computed(() => {
           <div class="flex flex-wrap gap-4">
             <NuxtLink
               to="/products"
-              class="bg-primary text-white font-bold text-sm px-8 py-3.5 rounded-xl hover:bg-[#0040a2] hover:-translate-y-0.5 hover:shadow-[0_10px_20px_rgba(0,82,204,0.3)] transition-all flex items-center group cursor-pointer shadow-md"
+              class="bg-[#0052cc] text-white font-bold text-sm px-8 py-3.5 rounded-xl hover:bg-[#0040a2] hover:-translate-y-0.5 hover:shadow-[0_10px_20px_rgba(0,82,204,0.3)] transition-all flex items-center group cursor-pointer shadow-md"
             >
               Khám Phá Ngay
               <span
@@ -162,10 +163,10 @@ const discountedProducts = computed(() => {
     <!-- Dynamic Category Quick Links -->
     <section v-if="categories.length > 0">
       <div class="flex items-center justify-between mb-6">
-        <h2 class="text-2xl font-bold text-on-surface">Danh Mục Nổi Bật</h2>
+        <h2 class="text-2xl font-bold text-gray-900">Danh Mục Nổi Bật</h2>
         <NuxtLink
           to="/products"
-          class="text-sm font-semibold text-primary hover:underline flex items-center"
+          class="text-sm font-semibold text-[#0052cc] hover:underline flex items-center"
         >
           Xem tất cả
           <span class="material-symbols-outlined text-base">chevron_right</span>
@@ -177,15 +178,15 @@ const discountedProducts = computed(() => {
           v-for="cat in categories"
           :key="cat.id"
           :to="`/products?categoryId=${cat.id}`"
-          class="bg-white rounded-2xl p-5 flex flex-col items-center justify-center h-36 shadow-sm border border-gray-100 hover:-translate-y-1.5 hover:shadow-lg hover:border-primary/30 transition-all duration-300 group cursor-pointer"
+          class="bg-white rounded-2xl p-5 flex flex-col items-center justify-center h-36 shadow-sm border border-gray-100 hover:-translate-y-1.5 hover:shadow-lg hover:border-[#0052cc]/30 transition-all duration-300 group cursor-pointer"
         >
           <div
-            class="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center mb-2.5 group-hover:bg-primary group-hover:text-white text-primary transition-colors duration-300"
+            class="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center mb-2.5 group-hover:bg-[#0052cc] group-hover:text-white text-[#0052cc] transition-colors duration-300"
           >
             <span class="material-symbols-outlined text-2xl">category</span>
           </div>
           <span
-            class="font-bold text-xs text-gray-800 text-center group-hover:text-primary transition-colors line-clamp-1"
+            class="font-bold text-xs text-gray-800 text-center group-hover:text-[#0052cc] transition-colors line-clamp-1"
           >
             {{ cat.name }}
           </span>
@@ -196,15 +197,15 @@ const discountedProducts = computed(() => {
     <!-- Limited Offers / Discounted Products -->
     <section v-if="discountedProducts.length > 0">
       <div class="flex items-center justify-between mb-6">
-        <h3 class="text-2xl font-bold flex items-center gap-2 text-on-surface">
-          <span class="material-symbols-outlined text-error fill"
+        <h3 class="text-2xl font-bold flex items-center gap-2 text-gray-900">
+          <span class="material-symbols-outlined text-[#ef4444] fill"
             >local_fire_department</span
           >
           Ưu đãi giới hạn
         </h3>
         <NuxtLink
           to="/products"
-          class="text-sm font-semibold text-primary hover:underline flex items-center"
+          class="text-sm font-semibold text-[#0052cc] hover:underline flex items-center"
         >
           Xem tất cả
           <span class="material-symbols-outlined text-base">chevron_right</span>
@@ -219,14 +220,14 @@ const discountedProducts = computed(() => {
         >
           <!-- Favorite button -->
           <button
-            class="absolute top-4 right-4 p-2 text-gray-400 hover:text-error bg-gray-50/80 rounded-full z-10 cursor-pointer"
+            class="absolute top-4 right-4 p-2 text-gray-400 hover:text-[#ef4444] bg-gray-50/80 rounded-full z-10 cursor-pointer"
             @click="toggleWishlist(product.id)"
           >
             <span
               class="material-symbols-outlined text-lg"
               :class="{
                 fill: isWishlisted(product.id),
-                'text-error': isWishlisted(product.id),
+                'text-[#ef4444]': isWishlisted(product.id),
               }"
             >
               favorite
@@ -236,7 +237,7 @@ const discountedProducts = computed(() => {
           <!-- Discount badge -->
           <div
             v-if="product.discountPercent"
-            class="absolute top-4 left-4 bg-error text-white font-bold text-xs px-2.5 py-1 rounded-md z-10 shadow-sm"
+            class="absolute top-4 left-4 bg-[#ef4444] text-white font-bold text-xs px-2.5 py-1 rounded-md z-10 shadow-sm"
           >
             -{{ product.discountPercent }}%
           </div>
@@ -248,7 +249,7 @@ const discountedProducts = computed(() => {
           >
             <img
               :src="
-                product.images?.[0]?.imageUrl ||
+                useImageUrl(product.images?.[0]?.imageUrl) ||
                 'https://placehold.co/400x300?text=TechPulse'
               "
               :alt="product.name"
@@ -259,7 +260,7 @@ const discountedProducts = computed(() => {
           <!-- Title -->
           <NuxtLink
             :to="`/products/${product.id}`"
-            class="font-semibold text-base line-clamp-2 mb-2 group-hover:text-primary transition-colors cursor-pointer text-gray-900"
+            class="font-semibold text-base line-clamp-2 mb-2 group-hover:text-[#0052cc] transition-colors cursor-pointer text-gray-900"
           >
             {{ product.name }}
           </NuxtLink>
@@ -267,7 +268,7 @@ const discountedProducts = computed(() => {
           <!-- Price & Discount -->
           <div class="mt-auto pt-3 border-t border-gray-100">
             <div class="flex items-baseline gap-2 mb-3">
-              <span class="text-xl font-bold text-primary">{{
+              <span class="text-xl font-bold text-[#0052cc]">{{
                 formatPrice(product.price)
               }}</span>
               <span
@@ -279,7 +280,7 @@ const discountedProducts = computed(() => {
             </div>
 
             <button
-              class="w-full bg-primary hover:bg-[#0040a2] text-white font-bold text-xs py-3 rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+              class="w-full bg-[#0052cc] hover:bg-[#0040a2] text-white font-bold text-xs py-3 rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
               @click="addToCart(product)"
             >
               <span class="material-symbols-outlined text-base"
@@ -295,10 +296,10 @@ const discountedProducts = computed(() => {
     <!-- Featured / New Products Grid -->
     <section>
       <div class="flex justify-between items-center mb-6">
-        <h3 class="text-2xl font-bold text-on-surface">Sản phẩm nổi bật</h3>
+        <h3 class="text-2xl font-bold text-gray-900">Sản phẩm nổi bật</h3>
         <NuxtLink
           to="/products"
-          class="text-sm font-semibold text-primary hover:underline"
+          class="text-sm font-semibold text-[#0052cc] hover:underline"
         >
           Xem tất cả
         </NuxtLink>
@@ -309,7 +310,7 @@ const discountedProducts = computed(() => {
         class="flex justify-center py-12"
       >
         <span
-          class="animate-spin material-symbols-outlined text-3xl text-primary"
+          class="animate-spin material-symbols-outlined text-3xl text-[#0052cc]"
           >progress_activity</span
         >
       </div>
@@ -326,7 +327,7 @@ const discountedProducts = computed(() => {
           >
             <img
               :src="
-                product.images?.[0]?.imageUrl ||
+                useImageUrl(product.images?.[0]?.imageUrl) ||
                 'https://placehold.co/300x300?text=TechPulse'
               "
               :alt="product.name"
@@ -336,17 +337,17 @@ const discountedProducts = computed(() => {
 
           <NuxtLink
             :to="`/products/${product.id}`"
-            class="text-sm font-semibold text-gray-900 line-clamp-2 mb-2 cursor-pointer hover:text-primary"
+            class="text-sm font-semibold text-gray-900 line-clamp-2 mb-2 cursor-pointer hover:text-[#0052cc]"
           >
             {{ product.name }}
           </NuxtLink>
 
           <div class="mt-auto flex items-center justify-between pt-2">
-            <span class="text-base font-bold text-primary">{{
+            <span class="text-base font-bold text-[#0052cc]">{{
               formatPrice(product.price)
             }}</span>
             <button
-              class="w-8 h-8 rounded-lg bg-gray-100 text-gray-700 flex items-center justify-center hover:bg-primary hover:text-white transition-colors cursor-pointer"
+              class="w-8 h-8 rounded-lg bg-gray-100 text-gray-700 flex items-center justify-center hover:bg-[#0052cc] hover:text-white transition-colors cursor-pointer"
               title="Thêm vào giỏ"
               @click="addToCart(product)"
             >

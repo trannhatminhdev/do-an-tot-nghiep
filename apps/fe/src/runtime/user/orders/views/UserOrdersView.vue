@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from '#app';
 import { useUserOrders } from '../composables/useUserOrders';
 import { useUserProducts } from '../../products/composables/useUserProducts';
+import { useImageUrl } from '#fe/core/composables/useImageUrl';
 
 const route = useRoute();
 const router = useRouter();
@@ -52,11 +53,11 @@ const statusBadge = (status: string) => {
     <!-- Header -->
     <div class="text-center max-w-2xl mx-auto space-y-3">
       <div
-        class="inline-flex items-center justify-center w-14 h-14 bg-primary/10 text-primary rounded-2xl mb-1"
+        class="inline-flex items-center justify-center w-14 h-14 bg-blue-100 text-[#0052cc] rounded-2xl mb-1"
       >
         <span class="material-symbols-outlined text-3xl">receipt_long</span>
       </div>
-      <h1 class="text-3xl md:text-4xl font-extrabold text-on-surface">
+      <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900">
         Tra Cứu Đơn Hàng
       </h1>
       <p class="text-xs md:text-sm text-gray-500">
@@ -84,13 +85,13 @@ const statusBadge = (status: string) => {
             type="text"
             required
             placeholder="Nhập số điện thoại hoặc mã đơn (VD: 1, 0912345678)..."
-            class="w-full bg-gray-50 border border-gray-200 rounded-2xl pl-11 pr-4 py-3.5 text-xs md:text-sm outline-none focus:border-primary focus:bg-white transition-all"
+            class="w-full bg-gray-50 border border-gray-200 rounded-2xl pl-11 pr-4 py-3.5 text-xs md:text-sm outline-none focus:border-[#0052cc] focus:bg-white transition-all text-gray-900"
           />
         </div>
         <button
           type="submit"
           :disabled="isLoading"
-          class="bg-primary hover:bg-[#0040a2] text-white font-bold text-xs md:text-sm px-7 py-3.5 rounded-2xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 shrink-0"
+          class="bg-[#0052cc] hover:bg-[#0040a2] text-white font-bold text-xs md:text-sm px-7 py-3.5 rounded-2xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 shrink-0"
         >
           <span
             v-if="isLoading"
@@ -111,7 +112,7 @@ const statusBadge = (status: string) => {
         class="flex flex-col items-center justify-center py-16 text-gray-400 space-y-3"
       >
         <span
-          class="animate-spin material-symbols-outlined text-4xl text-primary"
+          class="animate-spin material-symbols-outlined text-4xl text-[#0052cc]"
           >progress_activity</span
         >
         <p class="text-xs md:text-sm font-medium">
@@ -127,7 +128,7 @@ const statusBadge = (status: string) => {
         <span class="material-symbols-outlined text-6xl text-gray-300"
           >search_off</span
         >
-        <h2 class="text-lg font-bold text-on-surface">
+        <h2 class="text-lg font-bold text-gray-900">
           Không tìm thấy đơn hàng nào
         </h2>
         <p class="text-xs text-gray-500 max-w-md mx-auto">
@@ -155,7 +156,7 @@ const statusBadge = (status: string) => {
       <!-- Orders List Result -->
       <div v-else class="space-y-6">
         <div class="text-xs text-gray-500 px-2 font-medium">
-          Tìm thấy <span class="font-bold text-primary">{{ total }}</span> đơn
+          Tìm thấy <span class="font-bold text-[#0052cc]">{{ total }}</span> đơn
           hàng phù hợp:
         </div>
 
@@ -169,7 +170,7 @@ const statusBadge = (status: string) => {
             class="bg-gray-50/70 border-b border-gray-200/80 px-6 py-4 flex flex-wrap items-center justify-between gap-4"
           >
             <div class="flex items-center gap-3">
-              <span class="font-black text-base text-primary"
+              <span class="font-black text-base text-[#0052cc]"
                 >Mã đơn #{{ order.id }}</span
               >
               <span class="text-xs text-gray-500">
@@ -235,7 +236,7 @@ const statusBadge = (status: string) => {
               >
                 <img
                   :src="
-                    item.product?.images?.[0]?.imageUrl ||
+                    useImageUrl(item.product?.images?.[0]?.imageUrl) ||
                     'https://placehold.co/100x100?text=SP'
                   "
                   :alt="item.product?.name || 'Sản phẩm'"
@@ -245,7 +246,7 @@ const statusBadge = (status: string) => {
 
               <div class="flex-grow">
                 <h4
-                  class="font-bold text-xs md:text-sm text-on-surface line-clamp-1"
+                  class="font-bold text-xs md:text-sm text-gray-900 line-clamp-1"
                 >
                   {{ item.product?.name || `Sản phẩm #${item.productId}` }}
                 </h4>
@@ -256,7 +257,7 @@ const statusBadge = (status: string) => {
               </div>
 
               <div
-                class="font-bold text-xs md:text-sm text-on-surface shrink-0"
+                class="font-bold text-xs md:text-sm text-gray-900 shrink-0"
               >
                 {{ formatPrice(item.unitPrice * item.quantity) }}
               </div>
@@ -268,7 +269,7 @@ const statusBadge = (status: string) => {
             class="bg-gray-50/60 border-t border-gray-200/80 px-6 py-4 flex items-center justify-between text-xs"
           >
             <span class="font-semibold text-gray-600">Tổng thanh toán:</span>
-            <span class="text-xl font-black text-primary">{{
+            <span class="text-xl font-black text-[#0052cc]">{{
               formatPrice(order.totalAmount)
             }}</span>
           </div>

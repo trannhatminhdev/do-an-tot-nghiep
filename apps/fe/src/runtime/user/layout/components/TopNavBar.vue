@@ -40,14 +40,14 @@ function handleCategoryClick(categoryId?: number) {
 
 <template>
   <header
-    class="bg-surface/90 backdrop-blur-md dark:bg-inverse-surface/80 shadow-[0_4px_30px_rgba(0,0,0,0.05)] border-b border-gray-100 dark:border-white/10 fixed top-0 w-full z-50 transition-all duration-300"
+    class="bg-white/95 backdrop-blur-md shadow-[0_4px_30px_rgba(0,0,0,0.05)] border-b border-gray-100 fixed top-0 w-full z-50 transition-all duration-300"
   >
     <div
       class="flex items-center justify-between px-4 md:px-10 h-20 max-w-[1280px] mx-auto w-full gap-4 md:gap-8"
     >
       <!-- Mobile Menu Toggle -->
       <button
-        class="lg:hidden text-on-surface-variant p-2 rounded-full hover:bg-gray-100 transition-colors cursor-pointer"
+        class="lg:hidden text-gray-700 p-2 rounded-full hover:bg-gray-100 transition-colors cursor-pointer"
         aria-label="Toggle Menu"
         @click="isMobileMenuOpen = !isMobileMenuOpen"
       >
@@ -59,7 +59,7 @@ function handleCategoryClick(categoryId?: number) {
       <!-- Brand Logo -->
       <NuxtLink to="/" class="flex items-center flex-shrink-0 cursor-pointer">
         <span
-          class="text-2xl font-black text-primary bg-clip-text text-transparent bg-gradient-to-r from-primary to-[#0ea5e9]"
+          class="text-2xl font-black text-[#0052cc] bg-clip-text bg-gradient-to-r from-[#0052cc] to-[#0ea5e9]"
         >
           TechPulse<span class="text-[#0ea5e9]">.</span>
         </span>
@@ -68,7 +68,7 @@ function handleCategoryClick(categoryId?: number) {
       <!-- Search Bar (Desktop) -->
       <div class="flex-grow max-w-md hidden md:block">
         <form
-          class="flex items-center border border-gray-200 rounded-full px-4 py-2 bg-gray-50/80 focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary focus-within:bg-white transition-all"
+          class="flex items-center border border-gray-200 rounded-full px-4 py-2 bg-gray-50/80 focus-within:ring-2 focus-within:ring-[#0052cc]/20 focus-within:border-[#0052cc] focus-within:bg-white transition-all"
           @submit.prevent="handleSearch"
         >
           <span class="material-symbols-outlined text-gray-400 mr-2 text-lg"
@@ -78,7 +78,7 @@ function handleCategoryClick(categoryId?: number) {
             v-model="searchQuery"
             type="text"
             placeholder="Tìm kiếm sản phẩm, thương hiệu..."
-            class="bg-transparent border-none focus:outline-none text-sm w-full text-on-surface placeholder:text-gray-400"
+            class="bg-transparent border-none focus:outline-none text-sm w-full text-gray-900 placeholder:text-gray-400"
           />
         </form>
       </div>
@@ -87,15 +87,15 @@ function handleCategoryClick(categoryId?: number) {
       <nav class="hidden lg:flex items-center gap-6 flex-shrink-0">
         <NuxtLink
           to="/products"
-          class="font-semibold text-sm text-gray-700 hover:text-primary transition-colors"
-          active-class="text-primary font-bold"
+          class="font-semibold text-sm text-gray-700 hover:text-[#0052cc] transition-colors"
+          active-class="text-[#0052cc] font-bold"
         >
           Tất cả
         </NuxtLink>
         <button
           v-for="cat in categories.slice(0, 5)"
           :key="cat.id"
-          class="font-semibold text-sm text-gray-700 hover:text-primary transition-colors cursor-pointer"
+          class="font-semibold text-sm text-gray-700 hover:text-[#0052cc] transition-colors cursor-pointer"
           @click="handleCategoryClick(cat.id)"
         >
           {{ cat.name }}
@@ -107,13 +107,13 @@ function handleCategoryClick(categoryId?: number) {
         <!-- Cart Button -->
         <NuxtLink
           to="/cart"
-          class="p-2 text-gray-700 hover:text-primary transition-colors rounded-full hover:bg-gray-100 relative cursor-pointer flex items-center justify-center"
+          class="p-2 text-gray-700 hover:text-[#0052cc] transition-colors rounded-full hover:bg-gray-100 relative cursor-pointer flex items-center justify-center"
           aria-label="Giỏ hàng"
         >
           <span class="material-symbols-outlined">shopping_cart</span>
           <span
             v-if="cartCount > 0"
-            class="absolute top-0 right-0 bg-error text-white font-bold text-[10px] rounded-full w-5 h-5 flex items-center justify-center border-2 border-white shadow-sm"
+            class="absolute top-0 right-0 bg-[#ef4444] text-white font-bold text-[10px] rounded-full w-5 h-5 flex items-center justify-center border-2 border-white shadow-sm"
           >
             {{ cartCount }}
           </span>
@@ -137,14 +137,14 @@ function handleCategoryClick(categoryId?: number) {
             v-model="searchQuery"
             type="text"
             placeholder="Tìm kiếm sản phẩm..."
-            class="bg-transparent border-none focus:outline-none text-sm w-full"
+            class="bg-transparent border-none focus:outline-none text-sm w-full text-gray-900 placeholder:text-gray-400"
           />
         </div>
       </form>
 
       <div class="flex flex-col space-y-1">
         <button
-          class="text-left py-2.5 px-3 rounded-xl font-semibold text-xs text-gray-700 hover:bg-blue-50 hover:text-primary transition-colors"
+          class="text-left py-2.5 px-3 rounded-xl font-semibold text-xs text-gray-700 hover:bg-blue-50 hover:text-[#0052cc] transition-colors"
           @click="handleCategoryClick()"
         >
           Tất cả sản phẩm
@@ -152,7 +152,7 @@ function handleCategoryClick(categoryId?: number) {
         <button
           v-for="cat in categories"
           :key="cat.id"
-          class="text-left py-2.5 px-3 rounded-xl font-semibold text-xs text-gray-700 hover:bg-blue-50 hover:text-primary transition-colors"
+          class="text-left py-2.5 px-3 rounded-xl font-semibold text-xs text-gray-700 hover:bg-blue-50 hover:text-[#0052cc] transition-colors"
           @click="handleCategoryClick(cat.id)"
         >
           {{ cat.name }}

@@ -15,7 +15,7 @@ const { cartCount } = useUserCart();
       <NuxtLink
         to="/"
         class="flex flex-col items-center justify-center rounded-xl px-4 py-1 transition-all duration-200"
-        :class="route.path === '/' ? 'text-primary' : 'text-gray-500'"
+        :class="route.path === '/' ? 'text-[#0052cc]' : 'text-gray-500'"
       >
         <span
           class="material-symbols-outlined text-xl"
@@ -30,7 +30,7 @@ const { cartCount } = useUserCart();
         to="/products"
         class="flex flex-col items-center justify-center rounded-xl px-4 py-1 transition-all duration-200"
         :class="
-          route.path.startsWith('/products') ? 'text-primary' : 'text-gray-500'
+          route.path.startsWith('/products') ? 'text-[#0052cc]' : 'text-gray-500'
         "
       >
         <span
@@ -45,7 +45,7 @@ const { cartCount } = useUserCart();
       <NuxtLink
         to="/cart"
         class="flex flex-col items-center justify-center rounded-xl px-4 py-1 transition-all duration-200 relative"
-        :class="route.path === '/cart' ? 'text-primary' : 'text-gray-500'"
+        :class="route.path === '/cart' ? 'text-[#0052cc]' : 'text-gray-500'"
       >
         <span
           class="material-symbols-outlined text-xl"
@@ -55,7 +55,7 @@ const { cartCount } = useUserCart();
         <span class="font-medium text-[11px] mt-0.5">Giỏ hàng</span>
         <span
           v-if="cartCount > 0"
-          class="absolute top-1 right-3 bg-error text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center border border-white"
+          class="absolute top-1 right-3 bg-[#ef4444] text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center border border-white"
         >
           {{ cartCount }}
         </span>

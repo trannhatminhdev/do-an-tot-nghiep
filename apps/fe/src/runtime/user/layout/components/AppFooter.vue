@@ -7,7 +7,7 @@
     >
       <!-- Brand & Social -->
       <div class="col-span-1 flex flex-col">
-        <span class="text-[24px] font-black tracking-tight text-primary mb-6">
+        <span class="text-[24px] font-black tracking-tight text-[#0052cc] mb-6">
           TechPulse<span class="text-[#0ea5e9]">.</span>
         </span>
         <p class="text-gray-500 mb-8 leading-relaxed text-sm">

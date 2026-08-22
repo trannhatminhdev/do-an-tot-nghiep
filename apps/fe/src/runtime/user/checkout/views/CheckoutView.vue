@@ -5,6 +5,7 @@ import { useUserCart } from '../../cart/composables/useUserCart';
 import { useUserVouchers } from '../../vouchers/composables/useUserVouchers';
 import { useUserOrders } from '../../orders/composables/useUserOrders';
 import { useUserProducts } from '../../products/composables/useUserProducts';
+import { useImageUrl } from '#fe/core/composables/useImageUrl';
 
 const router = useRouter();
 const { cart, cartSubtotal, clearCart } = useUserCart();
@@ -77,12 +78,12 @@ async function handleCompleteOrder() {
     >
       <NuxtLink
         to="/cart"
-        class="text-xs md:text-sm font-semibold text-primary hover:underline flex items-center gap-1"
+        class="text-xs md:text-sm font-semibold text-[#0052cc] hover:underline flex items-center gap-1"
       >
         <span class="material-symbols-outlined text-base">arrow_back</span>
         Quay lại giỏ hàng
       </NuxtLink>
-      <h1 class="text-2xl md:text-3xl font-extrabold text-on-surface">
+      <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900">
         Thanh Toán Đơn Hàng
       </h1>
       <div class="w-10"></div>
@@ -96,10 +97,10 @@ async function handleCompleteOrder() {
       <span class="material-symbols-outlined text-5xl text-gray-300"
         >shopping_cart</span
       >
-      <h2 class="text-xl font-bold">Giỏ hàng của bạn đang trống</h2>
+      <h2 class="text-xl font-bold text-gray-900">Giỏ hàng của bạn đang trống</h2>
       <NuxtLink
         to="/products"
-        class="inline-block bg-primary text-white font-bold text-xs px-6 py-2.5 rounded-xl"
+        class="inline-block bg-[#0052cc] hover:bg-[#0040a2] text-white font-bold text-xs px-6 py-2.5 rounded-xl shadow-md transition-colors"
       >
         Mua sắm ngay
       </NuxtLink>
@@ -114,9 +115,9 @@ async function handleCompleteOrder() {
           class="bg-white rounded-3xl border border-gray-200 p-6 space-y-4 shadow-sm"
         >
           <h2
-            class="text-base font-bold text-on-surface flex items-center gap-2 border-b border-gray-100 pb-3"
+            class="text-base font-bold text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-3"
           >
-            <span class="material-symbols-outlined text-primary text-xl"
+            <span class="material-symbols-outlined text-[#0052cc] text-xl"
               >location_on</span
             >
             1. Thông tin giao hàng
@@ -132,7 +133,7 @@ async function handleCompleteOrder() {
                 type="text"
                 required
                 placeholder="Nhập họ và tên..."
-                class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-primary focus:bg-white transition-colors"
+                class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-[#0052cc] focus:bg-white transition-colors text-gray-900"
               />
             </div>
 
@@ -145,7 +146,7 @@ async function handleCompleteOrder() {
                 type="tel"
                 required
                 placeholder="Nhập số điện thoại..."
-                class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-primary focus:bg-white transition-colors"
+                class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-[#0052cc] focus:bg-white transition-colors text-gray-900"
               />
             </div>
 
@@ -155,7 +156,7 @@ async function handleCompleteOrder() {
               >
               <select
                 v-model="city"
-                class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-primary focus:bg-white transition-colors"
+                class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-[#0052cc] focus:bg-white transition-colors text-gray-900"
               >
                 <option value="TP. Hồ Chí Minh">TP. Hồ Chí Minh</option>
                 <option value="Hà Nội">Hà Nội</option>
@@ -173,7 +174,7 @@ async function handleCompleteOrder() {
                 v-model="district"
                 type="text"
                 placeholder="Nhập quận/huyện..."
-                class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-primary focus:bg-white transition-colors"
+                class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-[#0052cc] focus:bg-white transition-colors text-gray-900"
               />
             </div>
 
@@ -186,7 +187,7 @@ async function handleCompleteOrder() {
                 type="text"
                 required
                 placeholder="Ví dụ: 123 Đường Nguyễn Huệ, Phường Bến Nghé..."
-                class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-primary focus:bg-white transition-colors"
+                class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-[#0052cc] focus:bg-white transition-colors text-gray-900"
               />
             </div>
           </div>
@@ -197,9 +198,9 @@ async function handleCompleteOrder() {
           class="bg-white rounded-3xl border border-gray-200 p-6 space-y-4 shadow-sm"
         >
           <h2
-            class="text-base font-bold text-on-surface flex items-center gap-2 border-b border-gray-100 pb-3"
+            class="text-base font-bold text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-3"
           >
-            <span class="material-symbols-outlined text-primary text-xl"
+            <span class="material-symbols-outlined text-[#0052cc] text-xl"
               >local_shipping</span
             >
             2. Phương thức vận chuyển
@@ -210,7 +211,7 @@ async function handleCompleteOrder() {
               class="border rounded-2xl p-4 flex items-center gap-4 cursor-pointer transition-all"
               :class="
                 shippingMethod === 'standard'
-                  ? 'border-primary bg-blue-50/50 ring-2 ring-primary/20'
+                  ? 'border-[#0052cc] bg-blue-50/50 ring-2 ring-[#0052cc]/20'
                   : 'border-gray-200 hover:bg-gray-50'
               "
             >
@@ -219,11 +220,11 @@ async function handleCompleteOrder() {
                 type="radio"
                 name="shipping"
                 value="standard"
-                class="text-primary focus:ring-primary h-4 w-4"
+                class="text-[#0052cc] focus:ring-[#0052cc] h-4 w-4"
               />
               <div class="flex-grow">
                 <div
-                  class="flex justify-between items-center font-bold text-xs text-on-surface"
+                  class="flex justify-between items-center font-bold text-xs text-gray-900"
                 >
                   <span>Giao hàng tiêu chuẩn</span>
                   <span class="text-emerald-600 font-bold">Miễn phí</span>
@@ -238,7 +239,7 @@ async function handleCompleteOrder() {
               class="border rounded-2xl p-4 flex items-center gap-4 cursor-pointer transition-all"
               :class="
                 shippingMethod === 'express'
-                  ? 'border-primary bg-blue-50/50 ring-2 ring-primary/20'
+                  ? 'border-[#0052cc] bg-blue-50/50 ring-2 ring-[#0052cc]/20'
                   : 'border-gray-200 hover:bg-gray-50'
               "
             >
@@ -247,14 +248,14 @@ async function handleCompleteOrder() {
                 type="radio"
                 name="shipping"
                 value="express"
-                class="text-primary focus:ring-primary h-4 w-4"
+                class="text-[#0052cc] focus:ring-[#0052cc] h-4 w-4"
               />
               <div class="flex-grow">
                 <div
-                  class="flex justify-between items-center font-bold text-xs text-on-surface"
+                  class="flex justify-between items-center font-bold text-xs text-gray-900"
                 >
                   <span>Giao hàng hỏa tốc (Express)</span>
-                  <span class="text-primary font-bold">50.000₫</span>
+                  <span class="text-[#0052cc] font-bold">50.000₫</span>
                 </div>
                 <div class="text-[11px] text-gray-500 mt-0.5">
                   Giao nhanh trong 24 giờ
@@ -269,9 +270,9 @@ async function handleCompleteOrder() {
           class="bg-white rounded-3xl border border-gray-200 p-6 space-y-4 shadow-sm"
         >
           <h2
-            class="text-base font-bold text-on-surface flex items-center gap-2 border-b border-gray-100 pb-3"
+            class="text-base font-bold text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-3"
           >
-            <span class="material-symbols-outlined text-primary text-xl"
+            <span class="material-symbols-outlined text-[#0052cc] text-xl"
               >payments</span
             >
             3. Phương thức thanh toán
@@ -282,7 +283,7 @@ async function handleCompleteOrder() {
               class="border rounded-2xl p-4 flex items-center gap-4 cursor-pointer transition-all"
               :class="
                 paymentMethod === 'cod'
-                  ? 'border-primary bg-blue-50/50 ring-2 ring-primary/20'
+                  ? 'border-[#0052cc] bg-blue-50/50 ring-2 ring-[#0052cc]/20'
                   : 'border-gray-200 hover:bg-gray-50'
               "
             >
@@ -291,7 +292,7 @@ async function handleCompleteOrder() {
                 type="radio"
                 name="payment"
                 value="cod"
-                class="text-primary focus:ring-primary h-4 w-4"
+                class="text-[#0052cc] focus:ring-[#0052cc] h-4 w-4"
               />
               <span class="material-symbols-outlined text-gray-600"
                 >payments</span
@@ -305,7 +306,7 @@ async function handleCompleteOrder() {
               class="border rounded-2xl p-4 flex items-center gap-4 cursor-pointer transition-all"
               :class="
                 paymentMethod === 'card'
-                  ? 'border-primary bg-blue-50/50 ring-2 ring-primary/20'
+                  ? 'border-[#0052cc] bg-blue-50/50 ring-2 ring-[#0052cc]/20'
                   : 'border-gray-200 hover:bg-gray-50'
               "
             >
@@ -314,7 +315,7 @@ async function handleCompleteOrder() {
                 type="radio"
                 name="payment"
                 value="card"
-                class="text-primary focus:ring-primary h-4 w-4"
+                class="text-[#0052cc] focus:ring-[#0052cc] h-4 w-4"
               />
               <span class="material-symbols-outlined text-gray-600"
                 >credit_card</span
@@ -328,7 +329,7 @@ async function handleCompleteOrder() {
               class="border rounded-2xl p-4 flex items-center gap-4 cursor-pointer transition-all"
               :class="
                 paymentMethod === 'ewallet'
-                  ? 'border-primary bg-blue-50/50 ring-2 ring-primary/20'
+                  ? 'border-[#0052cc] bg-blue-50/50 ring-2 ring-[#0052cc]/20'
                   : 'border-gray-200 hover:bg-gray-50'
               "
             >
@@ -337,7 +338,7 @@ async function handleCompleteOrder() {
                 type="radio"
                 name="payment"
                 value="ewallet"
-                class="text-primary focus:ring-primary h-4 w-4"
+                class="text-[#0052cc] focus:ring-[#0052cc] h-4 w-4"
               />
               <span class="material-symbols-outlined text-gray-600"
                 >account_balance_wallet</span
@@ -355,9 +356,9 @@ async function handleCompleteOrder() {
         class="lg:col-span-4 bg-white rounded-3xl border border-gray-200 p-6 space-y-6 shadow-sm sticky top-28"
       >
         <h2
-          class="text-lg font-bold text-on-surface border-b border-gray-100 pb-3 flex items-center gap-2"
+          class="text-lg font-bold text-gray-900 border-b border-gray-100 pb-3 flex items-center gap-2"
         >
-          <span class="material-symbols-outlined text-primary text-xl"
+          <span class="material-symbols-outlined text-[#0052cc] text-xl"
             >receipt_long</span
           >
           Tóm tắt đơn hàng
@@ -372,19 +373,19 @@ async function handleCompleteOrder() {
           >
             <img
               :src="
-                item.product.images?.[0]?.imageUrl ||
+                useImageUrl(item.product.images?.[0]?.imageUrl) ||
                 'https://placehold.co/100x100?text=SP'
               "
               :alt="item.product.name"
               class="w-12 h-12 object-contain bg-gray-50 rounded-xl p-1 shrink-0"
             />
             <div class="flex-grow">
-              <div class="font-bold text-on-surface line-clamp-1">
+              <div class="font-bold text-gray-900 line-clamp-1">
                 {{ item.product.name }}
               </div>
               <div class="text-gray-400">SL: {{ item.quantity }}</div>
             </div>
-            <div class="font-bold text-on-surface shrink-0">
+            <div class="font-bold text-gray-900 shrink-0">
               {{ formatPrice(item.product.price * item.quantity) }}
             </div>
           </div>
@@ -393,21 +394,21 @@ async function handleCompleteOrder() {
         <div class="space-y-2.5 text-xs border-t border-gray-100 pt-3">
           <div class="flex justify-between text-gray-600">
             <span>Tạm tính:</span>
-            <span class="font-bold text-on-surface">{{
+            <span class="font-bold text-gray-900">{{
               formatPrice(cartSubtotal)
             }}</span>
           </div>
 
           <div class="flex justify-between text-gray-600">
             <span>Phí vận chuyển:</span>
-            <span class="font-bold text-on-surface">{{
+            <span class="font-bold text-gray-900">{{
               shippingFee === 0 ? 'Miễn phí' : formatPrice(shippingFee)
             }}</span>
           </div>
 
           <div
             v-if="discountAmount > 0"
-            class="flex justify-between text-error font-bold"
+            class="flex justify-between text-[#ef4444] font-bold"
           >
             <span>Giảm giá:</span>
             <span>-{{ formatPrice(discountAmount) }}</span>
@@ -417,17 +418,17 @@ async function handleCompleteOrder() {
         <div
           class="border-t border-gray-200 pt-4 flex items-baseline justify-between"
         >
-          <span class="font-bold text-sm text-on-surface"
+          <span class="font-bold text-sm text-gray-900"
             >Tổng thanh toán:</span
           >
-          <span class="text-2xl font-black text-primary">{{
+          <span class="text-2xl font-black text-[#0052cc]">{{
             formatPrice(finalTotal)
           }}</span>
         </div>
 
         <button
           :disabled="isSubmitting"
-          class="w-full bg-primary hover:bg-[#0040a2] text-white font-bold text-sm py-4 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98 disabled:opacity-50"
+          class="w-full bg-[#0052cc] hover:bg-[#0040a2] text-white font-bold text-sm py-4 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98 disabled:opacity-50"
           @click="handleCompleteOrder"
         >
           <span

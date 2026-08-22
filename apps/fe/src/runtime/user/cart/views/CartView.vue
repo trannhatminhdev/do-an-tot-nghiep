@@ -3,6 +3,7 @@ import { ref, computed } from 'vue';
 import { useUserCart } from '../composables/useUserCart';
 import { useUserVouchers } from '../../vouchers/composables/useUserVouchers';
 import { useUserProducts } from '../../products/composables/useUserProducts';
+import { useImageUrl } from '#fe/core/composables/useImageUrl';
 
 const { cart, cartCount, cartSubtotal, updateQuantity, removeFromCart } =
   useUserCart();
@@ -48,12 +49,12 @@ const cartTotal = computed(() => {
     <div
       class="flex items-center justify-between border-b border-gray-200 pb-4"
     >
-      <h1 class="text-2xl md:text-3xl font-extrabold text-on-surface">
+      <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900">
         Giỏ Hàng Của Bạn
       </h1>
       <NuxtLink
         to="/products"
-        class="text-xs md:text-sm font-semibold text-primary hover:underline flex items-center gap-1"
+        class="text-xs md:text-sm font-semibold text-[#0052cc] hover:underline flex items-center gap-1"
       >
         <span class="material-symbols-outlined text-base">arrow_back</span>
         Tiếp tục mua sắm
@@ -68,7 +69,7 @@ const cartTotal = computed(() => {
       <span class="material-symbols-outlined text-6xl text-gray-300"
         >shopping_cart_off</span
       >
-      <h2 class="text-xl font-bold text-on-surface">
+      <h2 class="text-xl font-bold text-gray-900">
         Giỏ hàng của bạn đang trống
       </h2>
       <p class="text-xs text-gray-500 max-w-sm mx-auto">
@@ -76,7 +77,7 @@ const cartTotal = computed(() => {
       </p>
       <NuxtLink
         to="/products"
-        class="inline-block bg-primary text-white font-bold text-xs px-8 py-3.5 rounded-xl hover:bg-[#0040a2] transition-colors shadow-md"
+        class="inline-block bg-[#0052cc] text-white font-bold text-xs px-8 py-3.5 rounded-xl hover:bg-[#0040a2] transition-colors shadow-md"
       >
         Khám phá ngay
       </NuxtLink>
@@ -100,7 +101,7 @@ const cartTotal = computed(() => {
             >
               <img
                 :src="
-                  item.product.images?.[0]?.imageUrl ||
+                  useImageUrl(item.product.images?.[0]?.imageUrl) ||
                   'https://placehold.co/100x100?text=SP'
                 "
                 :alt="item.product.name"
@@ -113,7 +114,7 @@ const cartTotal = computed(() => {
               <div>
                 <NuxtLink
                   :to="`/products/${item.product.id}`"
-                  class="font-bold text-sm md:text-base text-on-surface hover:text-primary transition-colors line-clamp-2"
+                  class="font-bold text-sm md:text-base text-gray-900 hover:text-[#0052cc] transition-colors line-clamp-2"
                 >
                   {{ item.product.name }}
                 </NuxtLink>
@@ -137,7 +138,7 @@ const cartTotal = computed(() => {
               <div
                 class="flex flex-wrap items-center justify-between gap-4 mt-3"
               >
-                <span class="font-bold text-base text-primary">{{
+                <span class="font-bold text-base text-[#0052cc]">{{
                   formatPrice(item.product.price)
                 }}</span>
 
@@ -146,7 +147,7 @@ const cartTotal = computed(() => {
                   class="flex items-center bg-gray-50 rounded-xl border border-gray-200"
                 >
                   <button
-                    class="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-primary active:bg-gray-200 rounded-l-xl cursor-pointer"
+                    class="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-[#0052cc] active:bg-gray-200 rounded-l-xl cursor-pointer"
                     aria-label="Giảm số lượng"
                     @click="updateQuantity(idx, -1)"
                   >
@@ -155,11 +156,11 @@ const cartTotal = computed(() => {
                     >
                   </button>
                   <span
-                    class="w-8 text-center font-bold text-xs text-on-surface"
+                    class="w-8 text-center font-bold text-xs text-gray-900"
                     >{{ item.quantity }}</span
                   >
                   <button
-                    class="w-8 h-8 flex items-center justify-center text-primary active:bg-gray-200 rounded-r-xl cursor-pointer"
+                    class="w-8 h-8 flex items-center justify-center text-[#0052cc] active:bg-gray-200 rounded-r-xl cursor-pointer"
                     aria-label="Tăng số lượng"
                     @click="updateQuantity(idx, 1)"
                   >
@@ -171,7 +172,7 @@ const cartTotal = computed(() => {
 
             <!-- Remove Button -->
             <button
-              class="text-gray-400 hover:text-error transition-colors p-2 cursor-pointer self-start md:self-center"
+              class="text-gray-400 hover:text-[#ef4444] transition-colors p-2 cursor-pointer self-start md:self-center"
               title="Xóa sản phẩm"
               @click="removeFromCart(idx)"
             >
@@ -184,8 +185,8 @@ const cartTotal = computed(() => {
         <div
           class="bg-white rounded-3xl border border-gray-200 p-6 space-y-4 shadow-sm"
         >
-          <h3 class="font-bold text-sm text-on-surface flex items-center gap-2">
-            <span class="material-symbols-outlined text-primary"
+          <h3 class="font-bold text-sm text-gray-900 flex items-center gap-2">
+            <span class="material-symbols-outlined text-[#0052cc]"
               >local_offer</span
             >
             Mã giảm giá / Voucher
@@ -196,12 +197,12 @@ const cartTotal = computed(() => {
               v-model="voucherInput"
               type="text"
               placeholder="Nhập mã voucher (VD: TECHPULSE10)..."
-              class="flex-grow bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-primary focus:bg-white uppercase"
+              class="flex-grow bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-[#0052cc] focus:bg-white uppercase text-gray-900"
             />
             <button
               type="submit"
               :disabled="isVoucherLoading"
-              class="bg-primary text-white font-bold text-xs px-6 py-2.5 rounded-xl hover:bg-[#0040a2] transition-colors cursor-pointer shadow-sm disabled:opacity-50 flex items-center gap-1"
+              class="bg-[#0052cc] text-white font-bold text-xs px-6 py-2.5 rounded-xl hover:bg-[#0040a2] transition-colors cursor-pointer shadow-sm disabled:opacity-50 flex items-center gap-1"
             >
               <span
                 v-if="isVoucherLoading"
@@ -217,7 +218,7 @@ const cartTotal = computed(() => {
             v-if="appliedVoucher"
             class="flex items-center justify-between bg-blue-50 border border-blue-200 rounded-2xl px-4 py-3"
           >
-            <div class="flex items-center gap-2 text-xs font-bold text-primary">
+            <div class="flex items-center gap-2 text-xs font-bold text-[#0052cc]">
               <span class="material-symbols-outlined text-base"
                 >check_circle</span
               >
@@ -228,7 +229,7 @@ const cartTotal = computed(() => {
               >
             </div>
             <button
-              class="text-gray-400 hover:text-error cursor-pointer"
+              class="text-gray-400 hover:text-[#ef4444] cursor-pointer"
               @click="removeVoucher"
             >
               <span class="material-symbols-outlined text-base">close</span>
@@ -242,7 +243,7 @@ const cartTotal = computed(() => {
         class="lg:col-span-4 bg-white rounded-3xl border border-gray-200 p-6 space-y-6 shadow-sm sticky top-28"
       >
         <h2
-          class="text-lg font-bold text-on-surface border-b border-gray-100 pb-4"
+          class="text-lg font-bold text-gray-900 border-b border-gray-100 pb-4"
         >
           Tóm Tắt Đơn Hàng
         </h2>
@@ -250,7 +251,7 @@ const cartTotal = computed(() => {
         <div class="space-y-3 text-xs">
           <div class="flex justify-between text-gray-600">
             <span>Tạm tính ({{ cartCount }} sản phẩm):</span>
-            <span class="font-bold text-on-surface">{{
+            <span class="font-bold text-gray-900">{{
               formatPrice(cartSubtotal)
             }}</span>
           </div>
@@ -262,7 +263,7 @@ const cartTotal = computed(() => {
 
           <div
             v-if="discountAmount > 0"
-            class="flex justify-between text-error font-bold"
+            class="flex justify-between text-[#ef4444] font-bold"
           >
             <span>Giảm giá voucher:</span>
             <span>-{{ formatPrice(discountAmount) }}</span>
@@ -272,9 +273,9 @@ const cartTotal = computed(() => {
         <div
           class="border-t border-gray-200 pt-4 flex items-baseline justify-between"
         >
-          <span class="font-bold text-sm text-on-surface">Tổng cộng:</span>
+          <span class="font-bold text-sm text-gray-900">Tổng cộng:</span>
           <div class="text-right">
-            <span class="text-2xl font-black text-primary block">{{
+            <span class="text-2xl font-black text-[#0052cc] block">{{
               formatPrice(cartTotal)
             }}</span>
             <span class="text-[10px] text-gray-400">Đã bao gồm VAT</span>
@@ -284,7 +285,7 @@ const cartTotal = computed(() => {
         <!-- Checkout Button -->
         <NuxtLink
           to="/checkout"
-          class="w-full bg-primary hover:bg-[#0040a2] text-white font-bold text-sm py-3.5 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+          class="w-full bg-[#0052cc] hover:bg-[#0040a2] text-white font-bold text-sm py-3.5 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98"
         >
           <span class="material-symbols-outlined text-base">lock</span>
           Tiến Hành Thanh Toán

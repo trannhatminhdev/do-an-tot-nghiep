@@ -26,7 +26,7 @@ onMounted(async () => {
 
 <template>
   <div
-    class="min-h-screen bg-[#F8FAFC] text-on-surface flex flex-col font-sans selection:bg-primary/20 selection:text-primary"
+    class="min-h-screen bg-[#F8FAFC] text-slate-900 flex flex-col font-sans selection:bg-[#0052cc]/20 selection:text-[#0052cc]"
   >
     <TopNavBar />
     <main class="flex-grow pt-20">
