@@ -6,6 +6,7 @@ import {
   FindAllOrdersParams,
 } from '../../application/interfaces/order-repository.interface';
 import { PrismaService } from '../../../../core/database/prisma.service';
+import { formatProductImages } from '../../../../shared/utils/image-url.util';
 
 @Injectable()
 export class OrdersRepository implements IOrderRepository {
@@ -88,16 +89,52 @@ export class OrdersRepository implements IOrderRepository {
       this.prisma.order.count({ where }),
     ]);
 
-    return { data, total };
+    const formattedData = data.map((order) => ({
+      ...order,
+      items: order.items.map((item) => ({
+        ...item,
+        product: item.product
+          ? {
+              ...item.product,
+              images: formatProductImages(item.product.images),
+            }
+          : item.product,
+      })),
+    }));
+
+    return { data: formattedData, total };
   }
 
   async findById(id: number) {
-    return this.prisma.order.findUnique({
+    const order = await this.prisma.order.findUnique({
       where: { id },
       include: {
-        items: true,
+        items: {
+          include: {
+            product: {
+              include: {
+                images: true,
+              },
+            },
+          },
+        },
       },
     });
+
+    if (!order) return null;
+
+    return {
+      ...order,
+      items: order.items.map((item) => ({
+        ...item,
+        product: item.product
+          ? {
+              ...item.product,
+              images: formatProductImages(item.product.images),
+            }
+          : item.product,
+      })),
+    };
   }
 
   async updateStatus(id: number, status: string) {

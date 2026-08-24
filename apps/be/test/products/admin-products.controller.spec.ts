@@ -64,6 +64,39 @@ describe('AdminProductsController', () => {
   });
 
   // Images and specifications
+  describe('uploadImage', () => {
+    it('should throw BadRequestException if no file is provided', () => {
+      expect(() => controller.uploadImage(1, undefined as any)).toThrow();
+    });
+
+    it('should upload image and call service.addImage with full url', async () => {
+      const mockFile = { filename: 'test-image.jpg' } as Express.Multer.File;
+      const expectedImage = {
+        id: 1,
+        imageUrl:
+          'http://localhost:3000/static/uploads/products/test-image.jpg',
+        isThumbnail: true,
+      };
+      service.addImage!.mockResolvedValue(expectedImage);
+
+      const result = await controller.uploadImage(1, mockFile, 'true');
+      expect(service.addImage).toHaveBeenCalledWith(1, {
+        imageUrl:
+          'http://localhost:3000/static/uploads/products/test-image.jpg',
+        isThumbnail: true,
+      });
+      expect(result).toEqual(expectedImage);
+    });
+  });
+
+  describe('deleteImage', () => {
+    it('should delete image', async () => {
+      service.deleteImage!.mockResolvedValue(undefined as any);
+      await controller.removeImage(1, 2);
+      expect(service.deleteImage).toHaveBeenCalledWith(1, 2);
+    });
+  });
+
   describe('setThumbnail', () => {
     it('should set thumbnail', async () => {
       service.setThumbnail!.mockResolvedValue(undefined as any);
@@ -78,6 +111,14 @@ describe('AdminProductsController', () => {
       service.addSpecification!.mockResolvedValue(undefined as any);
       await controller.addSpecification(1, dto);
       expect(service.addSpecification).toHaveBeenCalledWith(1, dto);
+    });
+  });
+
+  describe('deleteSpecification', () => {
+    it('should delete spec', async () => {
+      service.deleteSpecification!.mockResolvedValue(undefined as any);
+      await controller.removeSpecification(1, 2);
+      expect(service.deleteSpecification).toHaveBeenCalledWith(1, 2);
     });
   });
 });

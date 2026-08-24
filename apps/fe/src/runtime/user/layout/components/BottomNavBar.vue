@@ -30,7 +30,9 @@ const { cartCount } = useUserCart();
         to="/products"
         class="flex flex-col items-center justify-center rounded-xl px-4 py-1 transition-all duration-200"
         :class="
-          route.path.startsWith('/products') ? 'text-[#0052cc]' : 'text-gray-500'
+          route.path.startsWith('/products')
+            ? 'text-[#0052cc]'
+            : 'text-gray-500'
         "
       >
         <span

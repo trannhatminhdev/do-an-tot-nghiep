@@ -10,10 +10,12 @@ import {
   ParseIntPipe,
   BadRequestException,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import type { Request } from 'express';
 import { ProductsService } from '../../application/services/products.service';
 import { CreateProductDto } from './dtos/create-product.dto';
 import { UpdateProductDto } from './dtos/update-product.dto';
@@ -23,6 +25,7 @@ import { RolesGuard } from '../../../auth/presentation/http/guards/roles.guard';
 import { Roles } from '../../../auth/presentation/http/decorators/roles.decorator';
 import * as fs from 'fs';
 import { Role } from '../../../../shared/constants/role.enum';
+import { formatImageUrl } from '../../../../shared/utils/image-url.util';
 
 const uploadPath = './static/uploads/products';
 if (!fs.existsSync(uploadPath)) {
@@ -74,11 +77,18 @@ export class AdminProductsController {
     @Param('id', ParseIntPipe) id: number,
     @UploadedFile() file: Express.Multer.File,
     @Body('isThumbnail') isThumbnail?: string,
+    @Req() req?: Request,
   ) {
     if (!file) {
       throw new BadRequestException('File is required');
     }
-    const imageUrl = `/static/uploads/products/${file.filename}`;
+    const baseUrl =
+      process.env.APP_URL ||
+      (req ? `${req.protocol}://${req.get('host')}` : undefined);
+    const imageUrl = formatImageUrl(
+      `/static/uploads/products/${file.filename}`,
+      baseUrl,
+    );
     const isThumb = isThumbnail === 'true';
 
     return this.productsService.addImage(id, {

@@ -4,7 +4,6 @@ import { useRoute, useRouter } from '#app';
 import { useUserProducts } from '../composables/useUserProducts';
 import { useUserReviews } from '../../reviews/composables/useUserReviews';
 import { useUserCart } from '../../cart/composables/useUserCart';
-import { useImageUrl } from '#fe/core/composables/useImageUrl';
 
 const route = useRoute();
 const router = useRouter();
@@ -122,7 +121,8 @@ function handleBuyNow() {
       v-if="isProductLoading && !activeProduct"
       class="flex justify-center items-center py-24"
     >
-      <span class="animate-spin material-symbols-outlined text-4xl text-[#0052cc]"
+      <span
+        class="animate-spin material-symbols-outlined text-4xl text-[#0052cc]"
         >progress_activity</span
       >
     </div>
@@ -158,10 +158,9 @@ function handleBuyNow() {
           >
             <img
               :src="
-                useImageUrl(
-                  activeProduct.images?.[selectedImageIndex]?.imageUrl ||
-                    activeProduct.images?.[0]?.imageUrl
-                ) || 'https://placehold.co/600x600?text=TechPulse'
+                activeProduct.images?.[selectedImageIndex]?.imageUrl ||
+                activeProduct.images?.[0]?.imageUrl ||
+                'https://placehold.co/600x600?text=TechPulse'
               "
               :alt="activeProduct.name"
               class="w-full h-full object-contain drop-shadow-lg transition-all duration-300"
@@ -201,7 +200,7 @@ function handleBuyNow() {
               @click="selectedImageIndex = idx"
             >
               <img
-                :src="useImageUrl(img.imageUrl)"
+                :src="img.imageUrl"
                 :alt="activeProduct.name"
                 class="w-full h-full object-contain"
               />
@@ -264,10 +263,9 @@ function handleBuyNow() {
               >
                 <span class="material-symbols-outlined text-sm">remove</span>
               </button>
-              <span
-                class="w-12 text-center font-bold text-sm text-gray-900"
-                >{{ quantity }}</span
-              >
+              <span class="w-12 text-center font-bold text-sm text-gray-900">{{
+                quantity
+              }}</span>
               <button
                 class="w-9 h-9 flex items-center justify-center text-[#0052cc] active:bg-gray-200 rounded-r-xl cursor-pointer"
                 @click="

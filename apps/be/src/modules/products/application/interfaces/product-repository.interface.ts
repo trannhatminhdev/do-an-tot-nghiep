@@ -2,10 +2,17 @@ import {
   Product,
   ProductImage,
   ProductSpecification,
+  Category,
   Prisma,
 } from '@prisma/client';
 
 export const IProductRepository = Symbol('IProductRepository');
+
+export type ProductWithDetails = Product & {
+  category?: Category;
+  images?: ProductImage[];
+  specifications?: ProductSpecification[];
+};
 
 export interface IProductRepository {
   createProduct(data: Prisma.ProductUncheckedCreateInput): Promise<Product>;
@@ -14,8 +21,8 @@ export interface IProductRepository {
     take?: number;
     search?: string;
     categoryId?: number;
-  }): Promise<{ data: Product[]; total: number }>;
-  findProductById(id: number): Promise<Product | null>;
+  }): Promise<{ data: ProductWithDetails[]; total: number }>;
+  findProductById(id: number): Promise<ProductWithDetails | null>;
   updateProduct(
     id: number,
     data: Prisma.ProductUncheckedUpdateInput,

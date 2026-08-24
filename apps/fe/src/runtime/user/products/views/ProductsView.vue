@@ -4,7 +4,6 @@ import { useRoute, useRouter } from '#app';
 import { useUserProducts } from '../composables/useUserProducts';
 import { useUserCategories } from '../../categories/composables/useUserCategories';
 import { useUserCart } from '../../cart/composables/useUserCart';
-import { useImageUrl } from '#fe/core/composables/useImageUrl';
 
 const route = useRoute();
 const router = useRouter();
@@ -263,7 +262,7 @@ const displayedProducts = computed(() => {
             >
               <img
                 :src="
-                  useImageUrl(product.images?.[0]?.imageUrl) ||
+                  product.images?.[0]?.imageUrl ||
                   'https://placehold.co/400x400?text=TechPulse'
                 "
                 :alt="product.name"

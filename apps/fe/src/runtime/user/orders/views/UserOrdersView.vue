@@ -3,7 +3,6 @@ import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from '#app';
 import { useUserOrders } from '../composables/useUserOrders';
 import { useUserProducts } from '../../products/composables/useUserProducts';
-import { useImageUrl } from '#fe/core/composables/useImageUrl';
 
 const route = useRoute();
 const router = useRouter();
@@ -236,7 +235,7 @@ const statusBadge = (status: string) => {
               >
                 <img
                   :src="
-                    useImageUrl(item.product?.images?.[0]?.imageUrl) ||
+                    item.product?.images?.[0]?.imageUrl ||
                     'https://placehold.co/100x100?text=SP'
                   "
                   :alt="item.product?.name || 'Sản phẩm'"
@@ -256,9 +255,7 @@ const statusBadge = (status: string) => {
                 </div>
               </div>
 
-              <div
-                class="font-bold text-xs md:text-sm text-gray-900 shrink-0"
-              >
+              <div class="font-bold text-xs md:text-sm text-gray-900 shrink-0">
                 {{ formatPrice(item.unitPrice * item.quantity) }}
               </div>
             </div>

@@ -4,6 +4,7 @@ import {
   CreateReviewData,
 } from '../../application/interfaces/review-repository.interface';
 import { PrismaService } from '../../../../core/database/prisma.service';
+import { formatProductImages } from '../../../../shared/utils/image-url.util';
 
 @Injectable()
 export class ReviewRepository implements IReviewRepository {
@@ -68,7 +69,17 @@ export class ReviewRepository implements IReviewRepository {
       this.prisma.review.count({ where }),
     ]);
 
-    return { data, total };
+    const formattedData = data.map((review) => ({
+      ...review,
+      product: review.product
+        ? {
+            ...review.product,
+            images: formatProductImages(review.product.images),
+          }
+        : review.product,
+    }));
+
+    return { data: formattedData, total };
   }
 
   async findByProductId(productId: number) {

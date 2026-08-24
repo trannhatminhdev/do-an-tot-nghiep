@@ -32,10 +32,8 @@
               <img
                 v-if="item.product?.images && item.product.images.length > 0"
                 :src="
-                  useImageUrl(
-                    item.product.images.find((img) => img.isThumbnail)
-                      ?.imageUrl || item.product.images[0]?.imageUrl,
-                  )
+                  item.product.images.find((img) => img.isThumbnail)
+                    ?.imageUrl || item.product.images[0]?.imageUrl
                 "
                 class="w-16 h-16 object-cover rounded border"
               />
@@ -202,7 +200,6 @@
 import { ref, onMounted, computed } from 'vue';
 import { useRoute, definePageMeta, useHead } from '#imports';
 import { useAdminOrders } from '#fe/admin/orders/composables/useAdminOrders';
-import { useImageUrl } from '#fe/core/composables/useImageUrl';
 
 definePageMeta({ layout: 'admin' });
 

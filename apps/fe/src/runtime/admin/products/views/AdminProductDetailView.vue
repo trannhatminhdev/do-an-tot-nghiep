@@ -105,7 +105,7 @@
               class="flex gap-2 mb-2 items-center bg-slate-50 p-2 rounded border"
             >
               <img
-                :src="useImageUrl(img.imageUrl)"
+                :src="img.imageUrl"
                 class="w-10 h-10 object-cover border rounded"
               />
               <label
@@ -231,7 +231,6 @@ import { useRoute, useRouter, definePageMeta, useHead } from '#imports';
 
 import { useAdminProducts } from '#fe/admin/products/composables/useAdminProducts';
 import { useAdminCategories } from '#fe/admin/categories/composables/useAdminCategories';
-import { useImageUrl } from '#fe/core/composables/useImageUrl';
 import type {
   ProductImage,
   ProductSpecification,

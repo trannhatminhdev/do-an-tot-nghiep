@@ -85,7 +85,7 @@ export default defineNuxtModule<ModuleOptions>({
       },
     });
 
-    nuxt.hook('tailwindcss:config', (tailwindConfig: any) => {
+    nuxt.hook('tailwindcss:config', (tailwindConfig) => {
       tailwindConfig.darkMode = 'class';
       tailwindConfig.theme = tailwindConfig.theme || {};
       tailwindConfig.theme.extend = tailwindConfig.theme.extend || {};

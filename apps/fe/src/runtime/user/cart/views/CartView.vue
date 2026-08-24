@@ -3,7 +3,6 @@ import { ref, computed } from 'vue';
 import { useUserCart } from '../composables/useUserCart';
 import { useUserVouchers } from '../../vouchers/composables/useUserVouchers';
 import { useUserProducts } from '../../products/composables/useUserProducts';
-import { useImageUrl } from '#fe/core/composables/useImageUrl';
 
 const { cart, cartCount, cartSubtotal, updateQuantity, removeFromCart } =
   useUserCart();
@@ -101,7 +100,7 @@ const cartTotal = computed(() => {
             >
               <img
                 :src="
-                  useImageUrl(item.product.images?.[0]?.imageUrl) ||
+                  item.product.images?.[0]?.imageUrl ||
                   'https://placehold.co/100x100?text=SP'
                 "
                 :alt="item.product.name"
@@ -218,7 +217,9 @@ const cartTotal = computed(() => {
             v-if="appliedVoucher"
             class="flex items-center justify-between bg-blue-50 border border-blue-200 rounded-2xl px-4 py-3"
           >
-            <div class="flex items-center gap-2 text-xs font-bold text-[#0052cc]">
+            <div
+              class="flex items-center gap-2 text-xs font-bold text-[#0052cc]"
+            >
               <span class="material-symbols-outlined text-base"
                 >check_circle</span
               >

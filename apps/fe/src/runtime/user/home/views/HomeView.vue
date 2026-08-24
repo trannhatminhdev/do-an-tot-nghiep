@@ -3,7 +3,6 @@ import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { useUserProducts } from '../../products/composables/useUserProducts';
 import { useUserCategories } from '../../categories/composables/useUserCategories';
 import { useUserCart } from '../../cart/composables/useUserCart';
-import { useImageUrl } from '#fe/core/composables/useImageUrl';
 
 const { products, fetchProducts, formatPrice, isLoading } = useUserProducts();
 const { categories, fetchCategories } = useUserCategories();
@@ -249,7 +248,7 @@ const discountedProducts = computed(() => {
           >
             <img
               :src="
-                useImageUrl(product.images?.[0]?.imageUrl) ||
+                product.images?.[0]?.imageUrl ||
                 'https://placehold.co/400x300?text=TechPulse'
               "
               :alt="product.name"
@@ -327,7 +326,7 @@ const discountedProducts = computed(() => {
           >
             <img
               :src="
-                useImageUrl(product.images?.[0]?.imageUrl) ||
+                product.images?.[0]?.imageUrl ||
                 'https://placehold.co/300x300?text=TechPulse'
               "
               :alt="product.name"

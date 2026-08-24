@@ -1,12 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../core/database/prisma.service';
-import { IProductRepository } from '../../application/interfaces/product-repository.interface';
+import {
+  IProductRepository,
+  ProductWithDetails,
+} from '../../application/interfaces/product-repository.interface';
 import {
   Product,
   ProductImage,
   ProductSpecification,
   Prisma,
 } from '@prisma/client';
+import {
+  formatImageUrl,
+  formatProductImages,
+} from '../../../../shared/utils/image-url.util';
 
 @Injectable()
 export class ProductRepository implements IProductRepository {
@@ -25,7 +32,7 @@ export class ProductRepository implements IProductRepository {
     take?: number;
     search?: string;
     categoryId?: number;
-  }): Promise<{ data: Product[]; total: number }> {
+  }): Promise<{ data: ProductWithDetails[]; total: number }> {
     const { skip, take, search, categoryId } = params || {};
 
     const where = {
@@ -49,11 +56,16 @@ export class ProductRepository implements IProductRepository {
       this.prisma.product.count({ where }),
     ]);
 
-    return { data, total };
+    const formattedData = data.map((product) => ({
+      ...product,
+      images: formatProductImages(product.images),
+    }));
+
+    return { data: formattedData, total };
   }
 
-  async findProductById(id: number): Promise<Product | null> {
-    return this.prisma.product.findUnique({
+  async findProductById(id: number): Promise<ProductWithDetails | null> {
+    const product = await this.prisma.product.findUnique({
       where: { id },
       include: {
         category: true,
@@ -61,6 +73,13 @@ export class ProductRepository implements IProductRepository {
         specifications: true,
       },
     });
+
+    if (!product) return null;
+
+    return {
+      ...product,
+      images: formatProductImages(product.images),
+    };
   }
 
   async updateProduct(
@@ -83,13 +102,17 @@ export class ProductRepository implements IProductRepository {
     productId: number,
     data: { imageUrl: string; isThumbnail?: boolean },
   ): Promise<ProductImage> {
-    return this.prisma.productImage.create({
+    const created = await this.prisma.productImage.create({
       data: {
         productId,
-        imageUrl: data.imageUrl,
+        imageUrl: formatImageUrl(data.imageUrl),
         isThumbnail: data.isThumbnail || false,
       },
     });
+    return {
+      ...created,
+      imageUrl: formatImageUrl(created.imageUrl),
+    };
   }
 
   async deleteImage(imageId: number): Promise<void> {
@@ -113,9 +136,10 @@ export class ProductRepository implements IProductRepository {
   }
 
   async findImagesByProductId(productId: number): Promise<ProductImage[]> {
-    return this.prisma.productImage.findMany({
+    const images = await this.prisma.productImage.findMany({
       where: { productId },
     });
+    return formatProductImages(images);
   }
 
   async addSpecification(

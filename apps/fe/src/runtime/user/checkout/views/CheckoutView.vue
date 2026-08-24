@@ -5,7 +5,6 @@ import { useUserCart } from '../../cart/composables/useUserCart';
 import { useUserVouchers } from '../../vouchers/composables/useUserVouchers';
 import { useUserOrders } from '../../orders/composables/useUserOrders';
 import { useUserProducts } from '../../products/composables/useUserProducts';
-import { useImageUrl } from '#fe/core/composables/useImageUrl';
 
 const router = useRouter();
 const { cart, cartSubtotal, clearCart } = useUserCart();
@@ -97,7 +96,9 @@ async function handleCompleteOrder() {
       <span class="material-symbols-outlined text-5xl text-gray-300"
         >shopping_cart</span
       >
-      <h2 class="text-xl font-bold text-gray-900">Giỏ hàng của bạn đang trống</h2>
+      <h2 class="text-xl font-bold text-gray-900">
+        Giỏ hàng của bạn đang trống
+      </h2>
       <NuxtLink
         to="/products"
         class="inline-block bg-[#0052cc] hover:bg-[#0040a2] text-white font-bold text-xs px-6 py-2.5 rounded-xl shadow-md transition-colors"
@@ -373,7 +374,7 @@ async function handleCompleteOrder() {
           >
             <img
               :src="
-                useImageUrl(item.product.images?.[0]?.imageUrl) ||
+                item.product.images?.[0]?.imageUrl ||
                 'https://placehold.co/100x100?text=SP'
               "
               :alt="item.product.name"
@@ -418,9 +419,7 @@ async function handleCompleteOrder() {
         <div
           class="border-t border-gray-200 pt-4 flex items-baseline justify-between"
         >
-          <span class="font-bold text-sm text-gray-900"
-            >Tổng thanh toán:</span
-          >
+          <span class="font-bold text-sm text-gray-900">Tổng thanh toán:</span>
           <span class="text-2xl font-black text-[#0052cc]">{{
             formatPrice(finalTotal)
           }}</span>

@@ -72,10 +72,8 @@
               <img
                 v-if="product.images && product.images.length > 0"
                 :src="
-                  useImageUrl(
-                    product.images.find((img) => img.isThumbnail)?.imageUrl ||
-                      product.images[0]?.imageUrl,
-                  )
+                  product.images.find((img) => img.isThumbnail)?.imageUrl ||
+                  product.images[0]?.imageUrl
                 "
                 class="w-12 h-12 object-cover rounded"
               />
@@ -143,7 +141,6 @@ import { ref, onMounted, watch } from 'vue';
 import { definePageMeta, useHead } from '#imports';
 import { useAdminProducts } from '#fe/admin/products/composables/useAdminProducts';
 import { useAdminCategories } from '#fe/admin/categories/composables/useAdminCategories';
-import { useImageUrl } from '#fe/core/composables/useImageUrl';
 import type { Product } from '#fe/admin/products/types/product.types';
 
 definePageMeta({ layout: 'admin' });
