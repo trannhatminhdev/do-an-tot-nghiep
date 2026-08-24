@@ -26,20 +26,18 @@ let slideTimer: ReturnType<typeof setInterval> | null = null;
 
 const slides = [
   {
-    badge: 'Sản Phẩm Cao Cấp',
-    title: 'Đỉnh Cao Công Nghệ',
-    highlight: 'Trải Nghiệm Đột Phá',
-    desc: 'Hiệu năng vượt trội, chuẩn mực thiết kế tối giản và trải nghiệm số mượt mà cho mọi tác vụ công việc và giải trí.',
-    image:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuCXhNzgIlteJAcZ2655Fy1etb3lEc9Xs5_K1a76AOA451NoG9CSi9ZsgBNNTf3vBYjGtjhTuBiRSIa9S_s24LHqzJWVky4BCuvIvoaEyQphk6D9C8CXYKUfoAVRh8DxEk5ykR4ZUvls2w1CDdD7sWEPo-FSnOXwIB5HpqJGOjTqTgrBssd7hlzrFASuJCRowThiPy6qOFpsRF9siFkI8ezM0qM3ygpiAeujB45FLhOOYxDLZ7vnxqwV',
+    badge: 'Linh Kiện Điện Tử & IoT',
+    title: 'Đỉnh Cao Sáng Tạo',
+    highlight: 'Đột Phá Dự Án Maker',
+    desc: 'Cung cấp đầy đủ Arduino, vi điều khiển ESP32, module cảm biến chính xác và giải pháp mạch nhúng chuẩn kỹ thuật cho mọi ý tưởng công nghệ.',
+    image: '/images/hero-iot.jpg',
   },
   {
-    badge: 'Siêu Phẩm Mới',
+    badge: 'Giải Pháp Tự Động Hoá',
     title: 'Thế Hệ Tiếp Theo',
-    highlight: 'Thiết Kế Hoàn Mỹ',
-    desc: 'Khung viền tinh tế, camera chuyên nghiệp cùng vi xử lý thế hệ mới đưa mọi trải nghiệm lên tầm cao mới.',
-    image:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuASw8BkocfZMui0ob8HfodwA4j9rbLE_e-BYTcPLTml8X17i45NTR6Gp7mctCy9olcjqF2Zq__4pX7uhzcmJRdJcZnav_mYR54aWgaDzQZNsI5Hp4xn58ibHygNlbOM7aMR8o5BxYh9YzJ_bOyoFglI7R18zFuQ5IcsDqsJBWfRUB803fSTHLsEH0OfNCKgpuQ90SD6uSbD5BBFWs-wGComROrRMdgadwHAcGXFdGJmH3oiauQhExST',
+    highlight: 'Hiệu Năng & Độ Bền Vượt Trội',
+    desc: 'Module nguồn xung ổn định, driver điều khiển động cơ chuẩn xác cùng hệ thống cảm biến thông minh đưa mọi dự án DIY và tự động hoá lên tầm cao mới.',
+    image: '/images/hero-components.jpg',
   },
 ];
 

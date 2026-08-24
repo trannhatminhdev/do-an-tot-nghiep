@@ -15,6 +15,7 @@ describe('OrdersService', () => {
       findById: jest.fn(),
       updateStatus: jest.fn(),
       hasUserPurchasedProduct: jest.fn(),
+      findPurchasedOrdersByPhone: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({

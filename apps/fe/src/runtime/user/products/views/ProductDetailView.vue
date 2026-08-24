@@ -56,8 +56,8 @@ const ratingCounts = computed(() => {
   const counts: Record<number, number> = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
   if (!reviews.value) return counts;
   for (const rev of reviews.value) {
-    if (counts[rev.rating] !== undefined) {
-      counts[rev.rating]++;
+    if (rev.rating in counts) {
+      counts[rev.rating] = (counts[rev.rating] ?? 0) + 1;
     }
   }
   return counts;
@@ -522,12 +522,12 @@ function handleBuyNow() {
                 <div
                   class="h-full bg-amber-400 rounded-full transition-all duration-500"
                   :style="{
-                    width: `${reviews.length > 0 ? (ratingCounts[star] / reviews.length) * 100 : 0}%`,
+                    width: `${reviews.length > 0 ? ((ratingCounts[star] ?? 0) / reviews.length) * 100 : 0}%`,
                   }"
                 />
               </div>
               <span class="w-8 text-right text-[11px] text-gray-500 shrink-0">
-                {{ ratingCounts[star] }}
+                {{ ratingCounts[star] ?? 0 }}
               </span>
             </div>
           </div>

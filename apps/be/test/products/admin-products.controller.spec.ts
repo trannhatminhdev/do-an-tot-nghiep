@@ -73,16 +73,14 @@ describe('AdminProductsController', () => {
       const mockFile = { filename: 'test-image.jpg' } as Express.Multer.File;
       const expectedImage = {
         id: 1,
-        imageUrl:
-          'http://localhost:3000/static/uploads/products/test-image.jpg',
+        imageUrl: 'http://localhost:3000/uploads/products/test-image.jpg',
         isThumbnail: true,
       };
       service.addImage!.mockResolvedValue(expectedImage);
 
       const result = await controller.uploadImage(1, mockFile, 'true');
       expect(service.addImage).toHaveBeenCalledWith(1, {
-        imageUrl:
-          'http://localhost:3000/static/uploads/products/test-image.jpg',
+        imageUrl: 'http://localhost:3000/uploads/products/test-image.jpg',
         isThumbnail: true,
       });
       expect(result).toEqual(expectedImage);

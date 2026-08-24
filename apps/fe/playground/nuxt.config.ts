@@ -1,3 +1,5 @@
+import { fileURLToPath } from 'node:url';
+
 export default defineNuxtConfig({
   app: {
     head: {
@@ -13,6 +15,11 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   compatibilityDate: 'latest',
   aiCommerceFe: {},
+  nitro: {
+    output: {
+      publicDir: fileURLToPath(new URL('../../be/public', import.meta.url)),
+    },
+  },
   devServer: {
     port: parseInt(process.env.FE_PORT || '3001', 10),
   },

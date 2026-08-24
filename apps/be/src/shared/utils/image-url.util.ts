@@ -1,6 +1,6 @@
 /**
  * Chuyển đổi đường dẫn ảnh thành URL đầy đủ của backend
- * @param path Đường dẫn ảnh (ví dụ: "/static/uploads/products/abc.jpg" hoặc "https://...")
+ * @param path Đường dẫn ảnh (ví dụ: "/uploads/products/abc.jpg" hoặc "https://...")
  * @param baseUrl Base URL của backend (mặc định lấy từ APP_URL hoặc http://localhost:PORT)
  */
 export function formatImageUrl(

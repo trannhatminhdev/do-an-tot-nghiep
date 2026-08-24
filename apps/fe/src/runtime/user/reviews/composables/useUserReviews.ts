@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import { useToast } from '#fe/core/composables/useToast';
 import { userReviewsService } from '../services/user-reviews.service';
-import type { Review } from '../types/review.types';
+import type { Review, CreateReviewInput } from '../types/review.types';
 
 export function useUserReviews() {
   const reviews = ref<Review[]>([]);

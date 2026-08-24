@@ -19,11 +19,21 @@ import { SharedModule } from './shared/shared.module';
     // Shared Module chứa các utility, decorator xài chung
     SharedModule,
 
-    // Cấu hình ServeStatic để phục vụ file tĩnh (ví dụ: ảnh upload)
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'static'),
-      serveRoot: '/static',
-    }),
+    // 1. Phục vụ uploads từ thư mục static (không bao giờ bị Nuxt build làm sạch)
+    ServeStaticModule.forRoot(
+      {
+        rootPath: join(__dirname, '..', 'static', 'uploads'),
+        serveRoot: '/uploads',
+        serveStaticOptions: {
+          index: false,
+        },
+      },
+      // 2. Phục vụ giao diện tĩnh FE từ thư mục public (loại trừ api, swagger và uploads)
+      {
+        rootPath: join(__dirname, '..', 'public'),
+        exclude: ['/api/*path', '/swagger', '/swagger/*path', '/uploads/*path'],
+      },
+    ),
 
     // Cấu hình Event Emitter cho giao tiếp bất đồng bộ (giúp tách microservices sau này)
     EventEmitterModule.forRoot(),

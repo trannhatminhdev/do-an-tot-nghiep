@@ -19,6 +19,7 @@ describe('ReviewsService', () => {
       create: jest.fn(),
       findAll: jest.fn(),
       findByProductId: jest.fn(),
+      findByProductAndPhone: jest.fn(),
       findById: jest.fn(),
       delete: jest.fn(),
       updateReply: jest.fn(),
@@ -28,8 +29,6 @@ describe('ReviewsService', () => {
       hasUserPurchasedProduct: jest.fn(),
       findPurchasedOrdersByPhone: jest.fn(),
     };
-
-    repository.findByProductAndPhone = jest.fn();
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [

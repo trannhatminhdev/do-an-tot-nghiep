@@ -31,6 +31,10 @@ const uploadPath = './static/uploads/products';
 if (!fs.existsSync(uploadPath)) {
   fs.mkdirSync(uploadPath, { recursive: true });
 }
+const publicUploadPath = './public/uploads/products';
+if (!fs.existsSync(publicUploadPath)) {
+  fs.mkdirSync(publicUploadPath, { recursive: true });
+}
 
 @Controller('admin/products')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -82,11 +86,20 @@ export class AdminProductsController {
     if (!file) {
       throw new BadRequestException('File is required');
     }
+
+    try {
+      if (fs.existsSync(publicUploadPath)) {
+        fs.copyFileSync(file.path, `${publicUploadPath}/${file.filename}`);
+      }
+    } catch {
+      // ignore copy error
+    }
+
     const baseUrl =
       process.env.APP_URL ||
       (req ? `${req.protocol}://${req.get('host')}` : undefined);
     const imageUrl = formatImageUrl(
-      `/static/uploads/products/${file.filename}`,
+      `/uploads/products/${file.filename}`,
       baseUrl,
     );
     const isThumb = isThumbnail === 'true';

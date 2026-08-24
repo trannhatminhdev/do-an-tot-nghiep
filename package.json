@@ -15,6 +15,7 @@
     "build": "turbo run build",
     "build:be": "pnpm --filter be build",
     "build:fe": "pnpm --filter @ai-commerce/fe build",
+    "generate:fe": "pnpm --filter @ai-commerce/fe generate",
     "lint": "turbo run lint",
     "format": "turbo run format",
     "typecheck": "turbo run typecheck",
