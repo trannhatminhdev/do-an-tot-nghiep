@@ -65,15 +65,37 @@ export class OrdersRepository implements IOrderRepository {
       where.userId = params.userId;
     }
     if (params?.search) {
-      where.OR = [
-        { customerName: { contains: params.search } },
-        { customerPhone: { contains: params.search } },
+      const rawSearch = params.search.trim();
+      const orConditions: Prisma.OrderWhereInput[] = [
+        { customerName: { contains: rawSearch } },
+        { customerPhone: { contains: rawSearch } },
       ];
-      // Try to parse search as number for order ID search
-      const idSearch = parseInt(params.search, 10);
-      if (!isNaN(idSearch)) {
-        where.OR.push({ id: idSearch });
+
+      // Extract ID if user prefixed with '#', 'DH', 'MDH', 'ORDER', 'ORD', etc. (e.g. "#1024", "DH-1024", "# 1024")
+      const cleanedIdStr = rawSearch
+        .replace(/^[#\s]*(?:(?:DH|MDH|ORDER|ORD|DONHANG)[-_#\s]*)?/i, '')
+        .replace(/^#+/, '')
+        .trim();
+      const idSearch = parseInt(cleanedIdStr, 10);
+      if (
+        !isNaN(idSearch) &&
+        /^\d+$/.test(cleanedIdStr) &&
+        idSearch <= 2147483647
+      ) {
+        orConditions.push({ id: idSearch });
       }
+
+      // Also if search contains phone with spaces/dashes/dots (e.g. 0912 345 678), match with stripped phone digits
+      const cleanPhoneDigits = rawSearch.replace(/\D/g, '');
+      if (
+        cleanPhoneDigits.length >= 4 &&
+        cleanPhoneDigits !== rawSearch &&
+        cleanPhoneDigits !== cleanedIdStr
+      ) {
+        orConditions.push({ customerPhone: { contains: cleanPhoneDigits } });
+      }
+
+      where.OR = orConditions;
     }
 
     const [data, total] = await Promise.all([
@@ -159,5 +181,38 @@ export class OrdersRepository implements IOrderRepository {
       },
     });
     return count > 0;
+  }
+
+  async findPurchasedOrdersByPhone(phone: string, productId: number) {
+    const rawPhone = phone.trim();
+    const cleanDigits = rawPhone.replace(/\D/g, '');
+    const normalizedPhone =
+      cleanDigits.startsWith('84') && cleanDigits.length >= 10
+        ? '0' + cleanDigits.slice(2)
+        : cleanDigits;
+
+    const orders = await this.prisma.order.findMany({
+      where: {
+        status: { not: 'CANCELLED' },
+        items: {
+          some: { productId },
+        },
+      },
+      orderBy: { createdAt: 'asc' },
+    });
+
+    return orders.filter((order) => {
+      const orderDigits = order.customerPhone.replace(/\D/g, '');
+      const orderNorm =
+        orderDigits.startsWith('84') && orderDigits.length >= 10
+          ? '0' + orderDigits.slice(2)
+          : orderDigits;
+
+      return (
+        orderNorm === normalizedPhone ||
+        order.customerPhone.trim() === rawPhone ||
+        (cleanDigits.length >= 8 && orderDigits === cleanDigits)
+      );
+    });
   }
 }

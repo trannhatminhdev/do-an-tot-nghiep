@@ -20,26 +20,27 @@ export function useUserReviews() {
   };
 
   const addReview = async (
-    productId: number,
-    rating: number,
-    comment?: string,
+    input: CreateReviewInput,
     token?: string,
   ): Promise<Review | null> => {
     isLoading.value = true;
     try {
-      const newReview = await userReviewsService.createReview(
-        { productId, rating, comment },
-        token,
-      );
+      const newReview = await userReviewsService.createReview(input, token);
       reviews.value.unshift(newReview);
       toast.success('Cảm ơn bạn đã gửi đánh giá sản phẩm!');
       return newReview;
     } catch (err: unknown) {
-      if (err instanceof Error) {
-        toast.error(err.message);
-      } else {
-        toast.error('Không thể gửi đánh giá. Vui lòng thử lại sau.');
-      }
+      const errorObj = err as {
+        data?: { message?: string | string[] };
+        message?: string;
+      };
+      const msg =
+        (Array.isArray(errorObj?.data?.message)
+          ? errorObj.data.message.join(', ')
+          : errorObj?.data?.message) ||
+        errorObj?.message ||
+        'Không thể gửi đánh giá. Vui lòng thử lại sau.';
+      toast.error(msg);
       return null;
     } finally {
       isLoading.value = false;

@@ -5,27 +5,23 @@ import {
   Body,
   Param,
   ParseIntPipe,
-  UseGuards,
 } from '@nestjs/common';
 import { ReviewsService } from '../../application/services/reviews.service';
 import { CreateReviewDto } from './dtos/create-review.dto';
-import { CurrentUser } from '../../../auth/presentation/http/decorators/current-user.decorator';
-import { JwtAuthGuard } from '../../../auth/presentation/http/guards/jwt-auth.guard';
-import type { User } from '@prisma/client';
 
 @Controller('reviews')
 export class UserReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard)
-  async createReview(@Body() dto: CreateReviewDto, @CurrentUser() user: User) {
-    return this.reviewsService.createReview(
-      user.id,
-      dto.productId,
-      dto.rating,
-      dto.comment,
-    );
+  async createReview(@Body() dto: CreateReviewDto) {
+    return this.reviewsService.createReview({
+      productId: dto.productId,
+      phone: dto.phone,
+      fullName: dto.fullName,
+      rating: dto.rating,
+      comment: dto.comment,
+    });
   }
 
   @Get('product/:productId')

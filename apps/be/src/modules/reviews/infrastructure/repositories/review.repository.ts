@@ -14,7 +14,10 @@ export class ReviewRepository implements IReviewRepository {
     return this.prisma.review.create({
       data: {
         productId: data.productId,
+        customerPhone: data.customerPhone,
+        customerName: data.customerName,
         userId: data.userId,
+        orderId: data.orderId,
         rating: data.rating,
         comment: data.comment,
       },
@@ -94,6 +97,34 @@ export class ReviewRepository implements IReviewRepository {
         },
       },
       orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async findByProductAndPhone(productId: number, phone: string) {
+    const rawPhone = phone.trim();
+    const cleanDigits = rawPhone.replace(/\D/g, '');
+    const normalizedPhone =
+      cleanDigits.startsWith('84') && cleanDigits.length >= 10
+        ? '0' + cleanDigits.slice(2)
+        : cleanDigits;
+
+    const reviews = await this.prisma.review.findMany({
+      where: { productId },
+    });
+
+    return reviews.filter((r) => {
+      if (!r.customerPhone) return false;
+      const rDigits = r.customerPhone.replace(/\D/g, '');
+      const rNorm =
+        rDigits.startsWith('84') && rDigits.length >= 10
+          ? '0' + rDigits.slice(2)
+          : rDigits;
+
+      return (
+        rNorm === normalizedPhone ||
+        r.customerPhone.trim() === rawPhone ||
+        (cleanDigits.length >= 8 && rDigits === cleanDigits)
+      );
     });
   }
 

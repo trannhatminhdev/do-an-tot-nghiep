@@ -40,4 +40,8 @@ export class OrdersService {
   ): Promise<boolean> {
     return this.orderRepository.hasUserPurchasedProduct(userId, productId);
   }
+
+  async findPurchasedOrdersByPhone(phone: string, productId: number) {
+    return this.orderRepository.findPurchasedOrdersByPhone(phone, productId);
+  }
 }

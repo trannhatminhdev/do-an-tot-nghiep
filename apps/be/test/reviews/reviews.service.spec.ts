@@ -26,7 +26,10 @@ describe('ReviewsService', () => {
 
     ordersService = {
       hasUserPurchasedProduct: jest.fn(),
+      findPurchasedOrdersByPhone: jest.fn(),
     };
+
+    repository.findByProductAndPhone = jest.fn();
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -48,40 +51,104 @@ describe('ReviewsService', () => {
   });
 
   describe('createReview', () => {
+    it('should throw BadRequestException if phone is missing', async () => {
+      await expect(
+        service.createReview({
+          productId: 1,
+          phone: '',
+          rating: 5,
+        }),
+      ).rejects.toThrow(BadRequestException);
+    });
+
     it('should throw BadRequestException if rating is less than 1', async () => {
-      await expect(service.createReview(1, 1, 0)).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(
+        service.createReview({
+          productId: 1,
+          phone: '0912345678',
+          rating: 0,
+        }),
+      ).rejects.toThrow(BadRequestException);
     });
 
     it('should throw BadRequestException if rating is greater than 5', async () => {
-      await expect(service.createReview(1, 1, 6)).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(
+        service.createReview({
+          productId: 1,
+          phone: '0912345678',
+          rating: 6,
+        }),
+      ).rejects.toThrow(BadRequestException);
     });
 
-    it('should throw ForbiddenException if user has not purchased the product', async () => {
-      ordersService.hasUserPurchasedProduct!.mockResolvedValue(false);
-      await expect(service.createReview(1, 1, 5)).rejects.toThrow(
-        ForbiddenException,
-      );
+    it('should throw ForbiddenException if phone has not purchased the product', async () => {
+      ordersService.findPurchasedOrdersByPhone!.mockResolvedValue([]);
+      await expect(
+        service.createReview({
+          productId: 1,
+          phone: '0912345678',
+          rating: 5,
+        }),
+      ).rejects.toThrow(ForbiddenException);
     });
 
-    it('should create review successfully', async () => {
-      ordersService.hasUserPurchasedProduct!.mockResolvedValue(true);
+    it('should throw BadRequestException if user already reviewed for all their purchases', async () => {
+      ordersService.findPurchasedOrdersByPhone!.mockResolvedValue([
+        {
+          id: 10,
+          customerName: 'Minh',
+          customerPhone: '0912345678',
+          userId: 1,
+        },
+      ] as any);
+      (repository.findByProductAndPhone as jest.Mock).mockResolvedValue([
+        { id: 1, orderId: 10, customerPhone: '0912345678' },
+      ]);
+
+      await expect(
+        service.createReview({
+          productId: 1,
+          phone: '0912345678',
+          rating: 5,
+        }),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('should create review successfully when eligible', async () => {
+      ordersService.findPurchasedOrdersByPhone!.mockResolvedValue([
+        {
+          id: 10,
+          customerName: 'Minh',
+          customerPhone: '0912345678',
+          userId: 1,
+        },
+      ] as any);
+      (repository.findByProductAndPhone as jest.Mock).mockResolvedValue([]);
+
       const created = {
         id: 1,
         productId: 1,
+        customerPhone: '0912345678',
+        customerName: 'Minh',
+        orderId: 10,
         userId: 1,
         rating: 5,
         comment: 'Great',
       };
       repository.create.mockResolvedValue(created as any);
 
-      const result = await service.createReview(1, 1, 5, 'Great');
+      const result = await service.createReview({
+        productId: 1,
+        phone: '0912345678',
+        rating: 5,
+        comment: 'Great',
+      });
       expect(result).toEqual(created);
       expect(repository.create).toHaveBeenCalledWith({
         productId: 1,
+        customerPhone: '0912345678',
+        customerName: 'Minh',
+        orderId: 10,
         userId: 1,
         rating: 5,
         comment: 'Great',

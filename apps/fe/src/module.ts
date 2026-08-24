@@ -45,7 +45,32 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.options.app.head.link = nuxt.options.app.head.link || [];
     nuxt.options.app.head.link.push({
       rel: 'stylesheet',
-      href: 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap',
+      href: 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap',
+    });
+    nuxt.options.app.head.style = nuxt.options.app.head.style || [];
+    nuxt.options.app.head.style.push({
+      innerHTML: `
+        .material-symbols-outlined {
+          font-family: 'Material Symbols Outlined', sans-serif;
+          font-weight: normal;
+          font-style: normal;
+          font-size: 24px;
+          line-height: 1;
+          letter-spacing: normal;
+          text-transform: none;
+          display: inline-block;
+          white-space: nowrap;
+          word-wrap: normal;
+          direction: ltr;
+          -webkit-font-feature-settings: 'liga';
+          -webkit-font-smoothing: antialiased;
+          font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill,
+        .material-symbols-outlined.filled {
+          font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+      `,
     });
 
     await installModule('@nuxtjs/tailwindcss', {

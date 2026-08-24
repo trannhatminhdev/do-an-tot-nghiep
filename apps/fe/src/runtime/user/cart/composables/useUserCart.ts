@@ -24,13 +24,41 @@ export function useUserCart() {
     quantity = 1,
     color?: string,
     storage?: string,
-  ) => {
+  ): boolean => {
+    if (!product || product.stock <= 0) {
+      toast.error(`Sản phẩm "${product?.name || 'này'}" đã hết hàng!`);
+      return false;
+    }
+
+    if (quantity <= 0) {
+      toast.error('Số lượng không hợp lệ!');
+      return false;
+    }
+
     const existingIndex = cart.value.findIndex(
       (item) =>
         item.product.id === product.id &&
         item.selectedColor === color &&
         item.selectedStorage === storage,
     );
+
+    const currentQtyInCart =
+      existingIndex > -1 && cart.value[existingIndex]
+        ? cart.value[existingIndex]!.quantity
+        : 0;
+
+    if (currentQtyInCart + quantity > product.stock) {
+      if (currentQtyInCart > 0) {
+        toast.error(
+          `Bạn đã có ${currentQtyInCart} sản phẩm trong giỏ hàng. Chỉ có thể thêm tối đa ${product.stock - currentQtyInCart} sản phẩm nữa (tồn kho: ${product.stock}).`,
+        );
+      } else {
+        toast.error(
+          `Số lượng yêu cầu (${quantity}) vượt quá số lượng trong kho (${product.stock}).`,
+        );
+      }
+      return false;
+    }
 
     if (existingIndex > -1 && cart.value[existingIndex]) {
       cart.value[existingIndex]!.quantity += quantity;
@@ -44,6 +72,7 @@ export function useUserCart() {
     }
 
     toast.success(`Đã thêm "${product.name}" vào giỏ hàng!`);
+    return true;
   };
 
   const removeFromCart = (index: number) => {
@@ -57,9 +86,18 @@ export function useUserCart() {
 
   const updateQuantity = (index: number, delta: number) => {
     if (index >= 0 && index < cart.value.length && cart.value[index]) {
-      const newQty = cart.value[index]!.quantity + delta;
+      const item = cart.value[index]!;
+      const newQty = item.quantity + delta;
+
+      if (delta > 0 && newQty > item.product.stock) {
+        toast.error(
+          `Số lượng sản phẩm vượt quá tồn kho (còn ${item.product.stock} sản phẩm).`,
+        );
+        return;
+      }
+
       if (newQty > 0) {
-        cart.value[index]!.quantity = newQty;
+        item.quantity = newQty;
       } else {
         removeFromCart(index);
       }

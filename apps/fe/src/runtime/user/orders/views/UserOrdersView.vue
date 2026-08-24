@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from '#app';
 import { useUserOrders } from '../composables/useUserOrders';
 import { useUserProducts } from '../../products/composables/useUserProducts';
@@ -27,6 +27,20 @@ onMounted(async () => {
     await handleSearch();
   }
 });
+
+watch(
+  () => route.query.search || route.query.orderId,
+  async (newVal) => {
+    if (
+      newVal &&
+      typeof newVal === 'string' &&
+      newVal.trim() !== searchQuery.value.trim()
+    ) {
+      searchQuery.value = newVal.trim();
+      await handleSearch();
+    }
+  },
+);
 
 const statusBadge = (status: string) => {
   switch (status?.toUpperCase()) {
@@ -83,7 +97,7 @@ const statusBadge = (status: string) => {
             v-model="searchQuery"
             type="text"
             required
-            placeholder="Nhập số điện thoại hoặc mã đơn (VD: 1, 0912345678)..."
+            placeholder="Nhập số điện thoại hoặc mã đơn (VD: #1024, 0912345678)..."
             class="w-full bg-gray-50 border border-gray-200 rounded-2xl pl-11 pr-4 py-3.5 text-xs md:text-sm outline-none focus:border-[#0052cc] focus:bg-white transition-all text-gray-900"
           />
         </div>

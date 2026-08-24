@@ -43,6 +43,22 @@ const { cartCount } = useUserCart();
         <span class="font-medium text-[11px] mt-0.5">Sản phẩm</span>
       </NuxtLink>
 
+      <!-- Orders / Lookup Tab -->
+      <NuxtLink
+        to="/orders"
+        class="flex flex-col items-center justify-center rounded-xl px-4 py-1 transition-all duration-200"
+        :class="
+          route.path.startsWith('/orders') ? 'text-[#0052cc]' : 'text-gray-500'
+        "
+      >
+        <span
+          class="material-symbols-outlined text-xl"
+          :class="{ fill: route.path.startsWith('/orders') }"
+          >receipt_long</span
+        >
+        <span class="font-medium text-[11px] mt-0.5">Đơn hàng</span>
+      </NuxtLink>
+
       <!-- Cart Tab -->
       <NuxtLink
         to="/cart"

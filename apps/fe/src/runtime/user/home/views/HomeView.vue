@@ -233,12 +233,18 @@ const discountedProducts = computed(() => {
             </span>
           </button>
 
-          <!-- Discount badge -->
+          <!-- Discount badge & Stock badge -->
           <div
             v-if="product.discountPercent"
             class="absolute top-4 left-4 bg-[#ef4444] text-white font-bold text-xs px-2.5 py-1 rounded-md z-10 shadow-sm"
           >
             -{{ product.discountPercent }}%
+          </div>
+          <div
+            v-if="product.stock <= 0"
+            class="absolute top-4 right-4 bg-gray-600/90 text-white font-bold text-xs px-2.5 py-1 rounded-md z-10 shadow-sm"
+          >
+            Hết hàng
           </div>
 
           <!-- Product Image -->
@@ -279,13 +285,14 @@ const discountedProducts = computed(() => {
             </div>
 
             <button
-              class="w-full bg-[#0052cc] hover:bg-[#0040a2] text-white font-bold text-xs py-3 rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+              :disabled="product.stock <= 0"
+              class="w-full bg-[#0052cc] hover:bg-[#0040a2] text-white font-bold text-xs py-3 rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-400"
               @click="addToCart(product)"
             >
-              <span class="material-symbols-outlined text-base"
-                >add_shopping_cart</span
-              >
-              Thêm vào giỏ
+              <span class="material-symbols-outlined text-base">{{
+                product.stock <= 0 ? 'block' : 'add_shopping_cart'
+              }}</span>
+              {{ product.stock <= 0 ? 'Hết hàng' : 'Thêm vào giỏ' }}
             </button>
           </div>
         </div>
@@ -332,6 +339,12 @@ const discountedProducts = computed(() => {
               :alt="product.name"
               class="w-full h-full object-contain group-hover:scale-105 transition-transform"
             />
+            <div
+              v-if="product.stock <= 0"
+              class="absolute top-2 right-2 bg-gray-600/90 text-white text-[10px] font-bold px-2 py-0.5 rounded-md"
+            >
+              Hết hàng
+            </div>
           </NuxtLink>
 
           <NuxtLink
@@ -346,11 +359,14 @@ const discountedProducts = computed(() => {
               formatPrice(product.price)
             }}</span>
             <button
-              class="w-8 h-8 rounded-lg bg-gray-100 text-gray-700 flex items-center justify-center hover:bg-[#0052cc] hover:text-white transition-colors cursor-pointer"
-              title="Thêm vào giỏ"
+              :disabled="product.stock <= 0"
+              class="w-8 h-8 rounded-lg bg-gray-100 text-gray-700 flex items-center justify-center hover:bg-[#0052cc] hover:text-white transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+              :title="product.stock <= 0 ? 'Hết hàng' : 'Thêm vào giỏ'"
               @click="addToCart(product)"
             >
-              <span class="material-symbols-outlined text-base">add</span>
+              <span class="material-symbols-outlined text-base">{{
+                product.stock <= 0 ? 'block' : 'add'
+              }}</span>
             </button>
           </div>
         </div>

@@ -16,31 +16,68 @@ export class ReviewsService {
     private readonly ordersService: OrdersService,
   ) {}
 
-  async createReview(
-    userId: number,
-    productId: number,
-    rating: number,
-    comment?: string,
-  ) {
-    if (rating < 1 || rating > 5) {
-      throw new BadRequestException('Rating must be between 1 and 5');
+  async createReview(dto: {
+    productId: number;
+    phone: string;
+    fullName?: string;
+    rating: number;
+    comment?: string;
+    userId?: number;
+  }) {
+    const { productId, phone, fullName, rating, comment, userId } = dto;
+
+    if (!phone || !phone.trim()) {
+      throw new BadRequestException('Số điện thoại không được để trống');
     }
 
-    const hasPurchased = await this.ordersService.hasUserPurchasedProduct(
-      userId,
+    if (rating < 1 || rating > 5) {
+      throw new BadRequestException('Điểm đánh giá phải từ 1 đến 5 sao');
+    }
+
+    // 1. Find all eligible orders for this phone and product
+    const eligibleOrders = await this.ordersService.findPurchasedOrdersByPhone(
+      phone,
       productId,
     );
-    if (!hasPurchased) {
+
+    if (!eligibleOrders || eligibleOrders.length === 0) {
       throw new ForbiddenException(
-        'You can only review products you have purchased and completed the order.',
+        'Số điện thoại này chưa mua sản phẩm này hoặc đơn hàng đã bị hủy. Chỉ khách hàng đã mua sản phẩm mới được đánh giá.',
       );
     }
 
+    // 2. Find all existing reviews for this phone on this product
+    const existingReviews = await this.reviewRepository.findByProductAndPhone(
+      productId,
+      phone,
+    );
+
+    if (existingReviews.length >= eligibleOrders.length) {
+      throw new BadRequestException(
+        'Bạn đã đánh giá đủ số lần cho các đơn hàng đã mua sản phẩm này (tối đa 1 lần cho mỗi lần mua).',
+      );
+    }
+
+    // 3. Link this review to the next unreviewed order
+    const reviewedOrderIds = new Set(
+      existingReviews.map((r) => r.orderId).filter(Boolean),
+    );
+    const targetOrder =
+      eligibleOrders.find((o) => !reviewedOrderIds.has(o.id)) ||
+      eligibleOrders[existingReviews.length] ||
+      eligibleOrders[0];
+
+    const customerName =
+      fullName?.trim() || targetOrder.customerName || 'Khách hàng';
+
     return this.reviewRepository.create({
       productId,
-      userId,
+      customerPhone: phone.trim(),
+      customerName,
+      userId: userId || targetOrder.userId || null,
+      orderId: targetOrder.id,
       rating,
-      comment,
+      comment: comment?.trim() || undefined,
     });
   }
 

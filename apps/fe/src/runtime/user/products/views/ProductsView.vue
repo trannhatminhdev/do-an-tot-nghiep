@@ -274,6 +274,12 @@ const displayedProducts = computed(() => {
               >
                 -{{ product.discountPercent }}%
               </div>
+              <div
+                v-if="product.stock <= 0"
+                class="absolute top-3 right-3 bg-gray-600/90 text-white text-[11px] font-bold px-2.5 py-1 rounded-lg shadow-sm"
+              >
+                Hết hàng
+              </div>
             </NuxtLink>
 
             <NuxtLink
@@ -302,13 +308,14 @@ const displayedProducts = computed(() => {
 
             <!-- Add to Cart CTA -->
             <button
-              class="mt-4 w-full bg-[#0052cc] hover:bg-[#0040a2] text-white font-bold text-xs py-3 rounded-xl transition-all flex justify-center items-center gap-2 shadow-sm cursor-pointer"
+              :disabled="product.stock <= 0"
+              class="mt-4 w-full bg-[#0052cc] hover:bg-[#0040a2] text-white font-bold text-xs py-3 rounded-xl transition-all flex justify-center items-center gap-2 shadow-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-400"
               @click="addToCart(product)"
             >
-              <span class="material-symbols-outlined text-base"
-                >add_shopping_cart</span
-              >
-              Thêm vào giỏ
+              <span class="material-symbols-outlined text-base">{{
+                product.stock <= 0 ? 'block' : 'add_shopping_cart'
+              }}</span>
+              {{ product.stock <= 0 ? 'Hết hàng' : 'Thêm vào giỏ' }}
             </button>
           </div>
         </div>

@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useRouter } from '#app';
+import { useToast } from '#fe/core/composables/useToast';
 import { useUserCart } from '../../cart/composables/useUserCart';
 import { useUserVouchers } from '../../vouchers/composables/useUserVouchers';
 import { useUserOrders } from '../../orders/composables/useUserOrders';
 import { useUserProducts } from '../../products/composables/useUserProducts';
 
 const router = useRouter();
+const toast = useToast();
 const { cart, cartSubtotal, clearCart } = useUserCart();
 const { getDiscountAmount, removeVoucher } = useUserVouchers();
 const { createOrder, isLoading: isSubmitting } = useUserOrders();
@@ -37,12 +39,33 @@ const finalTotal = computed(() => {
 
 async function handleCompleteOrder() {
   if (!fullName.value || !phone.value || !address.value) {
-    alert('Vui lòng điền đầy đủ họ tên, số điện thoại và địa chỉ nhận hàng.');
+    toast.error(
+      'Vui lòng điền đầy đủ họ tên, số điện thoại và địa chỉ nhận hàng.',
+    );
     return;
   }
 
   if (cart.value.length === 0) {
     router.push('/cart');
+    return;
+  }
+
+  const invalidStockItem = cart.value.find(
+    (item) =>
+      !item.product ||
+      item.product.stock <= 0 ||
+      item.quantity > item.product.stock,
+  );
+  if (invalidStockItem) {
+    if (!invalidStockItem.product || invalidStockItem.product.stock <= 0) {
+      toast.error(
+        `Sản phẩm "${invalidStockItem.product?.name || 'này'}" đã hết hàng! Vui lòng cập nhật giỏ hàng.`,
+      );
+    } else {
+      toast.error(
+        `Sản phẩm "${invalidStockItem.product.name}" chỉ còn ${invalidStockItem.product.stock} sản phẩm trong kho (bạn đặt ${invalidStockItem.quantity}).`,
+      );
+    }
     return;
   }
 
@@ -303,7 +326,7 @@ async function handleCompleteOrder() {
               >
             </label>
 
-            <label
+            <!-- <label
               class="border rounded-2xl p-4 flex items-center gap-4 cursor-pointer transition-all"
               :class="
                 paymentMethod === 'card'
@@ -347,7 +370,7 @@ async function handleCompleteOrder() {
               <span class="font-bold text-gray-800 flex-grow"
                 >Ví MoMo / ZaloPay / VNPay</span
               >
-            </label>
+            </label> -->
           </div>
         </section>
       </div>

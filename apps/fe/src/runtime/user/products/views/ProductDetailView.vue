@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from '#app';
+import { useToast } from '#fe/core/composables/useToast';
 import { useUserProducts } from '../composables/useUserProducts';
 import { useUserReviews } from '../../reviews/composables/useUserReviews';
 import { useUserCart } from '../../cart/composables/useUserCart';
 
 const route = useRoute();
 const router = useRouter();
+const toast = useToast();
 
 const {
   activeProduct,
@@ -27,11 +29,39 @@ const quantity = ref(1);
 
 // Review Modal State
 const isReviewModalOpen = ref(false);
+const reviewerPhone = ref('');
+const reviewerName = ref('');
 const newRating = ref(5);
+const hoverRating = ref(0);
 const newComment = ref('');
 const isSubmittingReview = ref(false);
 
+const ratingLabels: Record<number, string> = {
+  1: '1 sao - Rất tệ',
+  2: '2 sao - Chưa hài lòng',
+  3: '3 sao - Bình thường',
+  4: '4 sao - Hài lòng',
+  5: '5 sao - Tuyệt vời',
+};
+
 const productId = computed(() => Number(route.params.id));
+
+const averageRating = computed(() => {
+  if (!reviews.value || reviews.value.length === 0) return 5.0;
+  const totalStars = reviews.value.reduce((sum, r) => sum + r.rating, 0);
+  return totalStars / reviews.value.length;
+});
+
+const ratingCounts = computed(() => {
+  const counts: Record<number, number> = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+  if (!reviews.value) return counts;
+  for (const rev of reviews.value) {
+    if (counts[rev.rating] !== undefined) {
+      counts[rev.rating]++;
+    }
+  }
+  return counts;
+});
 
 async function loadProductData() {
   if (productId.value) {
@@ -58,19 +88,26 @@ function handleOpenReviewModal() {
 }
 
 async function submitReview() {
-  if (newComment.value.trim()) {
-    isSubmittingReview.value = true;
-    const res = await addReview(
-      productId.value,
-      newRating.value,
-      newComment.value.trim(),
-    );
-    isSubmittingReview.value = false;
-    if (res) {
-      isReviewModalOpen.value = false;
-      newComment.value = '';
-      newRating.value = 5;
-    }
+  if (!reviewerPhone.value.trim()) {
+    toast.error('Vui lòng nhập số điện thoại đã đặt mua hàng.');
+    return;
+  }
+
+  isSubmittingReview.value = true;
+  const res = await addReview({
+    productId: productId.value,
+    phone: reviewerPhone.value.trim(),
+    fullName: reviewerName.value.trim() || undefined,
+    rating: newRating.value,
+    comment: newComment.value.trim() || undefined,
+  });
+  isSubmittingReview.value = false;
+  if (res) {
+    isReviewModalOpen.value = false;
+    newComment.value = '';
+    reviewerPhone.value = '';
+    reviewerName.value = '';
+    newRating.value = 5;
   }
 }
 
@@ -82,8 +119,10 @@ function handleAddToCart() {
 
 function handleBuyNow() {
   if (activeProduct.value) {
-    addToCart(activeProduct.value, quantity.value);
-    router.push('/cart');
+    const success = addToCart(activeProduct.value, quantity.value);
+    if (success) {
+      router.push('/cart');
+    }
   }
 }
 </script>
@@ -222,6 +261,47 @@ function handleBuyNow() {
             >
               {{ activeProduct.name }}
             </h1>
+
+            <!-- Product Rating Summary -->
+            <div class="flex items-center gap-3 mt-2.5 flex-wrap">
+              <div class="flex items-center gap-1.5">
+                <div class="flex text-amber-400">
+                  <span
+                    v-for="s in 5"
+                    :key="s"
+                    class="material-symbols-outlined text-lg"
+                    :class="
+                      s <= Math.round(averageRating)
+                        ? 'fill text-amber-400'
+                        : 'text-gray-300'
+                    "
+                  >
+                    star
+                  </span>
+                </div>
+                <span class="text-xs font-bold text-gray-900">
+                  {{ reviews.length > 0 ? averageRating.toFixed(1) : '5.0' }}
+                </span>
+              </div>
+              <span class="text-gray-300 text-xs">•</span>
+              <a
+                href="#reviews-section"
+                class="text-xs text-gray-500 hover:text-[#0052cc] transition-colors"
+              >
+                {{ reviews.length }} đánh giá
+              </a>
+              <span class="text-gray-300 text-xs">•</span>
+              <span
+                class="text-xs text-emerald-600 font-medium flex items-center gap-1"
+              >
+                <span
+                  class="material-symbols-outlined text-xs fill text-emerald-600"
+                  >verified</span
+                >
+                Chính hãng
+              </span>
+            </div>
+
             <p
               v-if="activeProduct.description"
               class="text-gray-500 text-xs md:text-sm mt-3 leading-relaxed"
@@ -258,44 +338,57 @@ function handleBuyNow() {
               class="flex items-center bg-gray-50 rounded-xl border border-gray-200"
             >
               <button
-                class="w-9 h-9 flex items-center justify-center text-gray-600 hover:text-[#0052cc] active:bg-gray-200 rounded-l-xl cursor-pointer"
+                :disabled="activeProduct.stock <= 0 || quantity <= 1"
+                class="w-9 h-9 flex items-center justify-center text-gray-600 hover:text-[#0052cc] active:bg-gray-200 rounded-l-xl cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
                 @click="quantity = Math.max(1, quantity - 1)"
               >
                 <span class="material-symbols-outlined text-sm">remove</span>
               </button>
               <span class="w-12 text-center font-bold text-sm text-gray-900">{{
-                quantity
+                activeProduct.stock <= 0 ? 0 : quantity
               }}</span>
               <button
-                class="w-9 h-9 flex items-center justify-center text-[#0052cc] active:bg-gray-200 rounded-r-xl cursor-pointer"
-                @click="
-                  quantity = Math.min(activeProduct.stock || 99, quantity + 1)
+                :disabled="
+                  activeProduct.stock <= 0 || quantity >= activeProduct.stock
                 "
+                class="w-9 h-9 flex items-center justify-center text-[#0052cc] active:bg-gray-200 rounded-r-xl cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+                @click="quantity = Math.min(activeProduct.stock, quantity + 1)"
               >
                 <span class="material-symbols-outlined text-sm">add</span>
               </button>
             </div>
+            <span
+              v-if="activeProduct.stock > 0"
+              class="text-xs text-gray-500 font-medium"
+            >
+              (Còn {{ activeProduct.stock }} sản phẩm)
+            </span>
+            <span v-else class="text-xs font-bold text-red-500">
+              (Hết hàng)
+            </span>
           </div>
 
           <!-- Action Buttons -->
           <div class="flex flex-col sm:flex-row gap-4 pt-4">
             <button
               :disabled="activeProduct.stock <= 0"
-              class="flex-1 bg-white border-2 border-[#0052cc] text-[#0052cc] hover:bg-blue-50 font-bold text-sm py-4 rounded-2xl transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40"
+              class="flex-1 bg-white border-2 border-[#0052cc] text-[#0052cc] hover:bg-blue-50 font-bold text-sm py-4 rounded-2xl transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white"
               @click="handleAddToCart"
             >
-              <span class="material-symbols-outlined text-xl"
-                >shopping_cart</span
-              >
-              Thêm vào giỏ hàng
+              <span class="material-symbols-outlined text-xl">{{
+                activeProduct.stock <= 0 ? 'block' : 'shopping_cart'
+              }}</span>
+              {{ activeProduct.stock <= 0 ? 'Hết hàng' : 'Thêm vào giỏ hàng' }}
             </button>
             <button
               :disabled="activeProduct.stock <= 0"
-              class="flex-1 bg-[#0052cc] hover:bg-[#0040a2] text-white font-bold text-sm py-4 rounded-2xl transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40"
+              class="flex-1 bg-[#0052cc] hover:bg-[#0040a2] text-white font-bold text-sm py-4 rounded-2xl transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
               @click="handleBuyNow"
             >
-              Mua ngay
-              <span class="material-symbols-outlined text-xl"
+              {{ activeProduct.stock <= 0 ? 'Hết hàng' : 'Mua ngay' }}
+              <span
+                v-if="activeProduct.stock > 0"
+                class="material-symbols-outlined text-xl"
                 >arrow_forward</span
               >
             </button>
@@ -349,7 +442,8 @@ function handleBuyNow() {
 
       <!-- Reviews Section -->
       <section
-        class="bg-white border border-gray-200 rounded-3xl p-6 md:p-10 shadow-sm space-y-6"
+        id="reviews-section"
+        class="bg-white border border-gray-200 rounded-3xl p-6 md:p-10 shadow-sm space-y-6 scroll-mt-24"
       >
         <div
           class="flex flex-wrap justify-between items-center gap-4 border-b border-gray-100 pb-4"
@@ -366,6 +460,77 @@ function handleBuyNow() {
           >
             Viết đánh giá
           </button>
+        </div>
+
+        <!-- Rating Summary Box (when reviews exist) -->
+        <div
+          v-if="reviews.length > 0"
+          class="bg-blue-50/40 border border-blue-100/80 rounded-2xl p-5 md:p-6 grid grid-cols-1 md:grid-cols-12 gap-6 items-center"
+        >
+          <!-- Left: Big score -->
+          <div
+            class="md:col-span-4 text-center md:text-left flex flex-col items-center md:items-start justify-center"
+          >
+            <div class="flex items-baseline gap-1.5">
+              <span class="text-4xl font-black text-[#0052cc]">
+                {{ averageRating.toFixed(1) }}
+              </span>
+              <span class="text-base text-gray-400 font-medium">/ 5</span>
+            </div>
+            <div class="flex text-amber-400 my-1.5">
+              <span
+                v-for="s in 5"
+                :key="s"
+                class="material-symbols-outlined text-xl"
+                :class="
+                  s <= Math.round(averageRating)
+                    ? 'fill text-amber-400'
+                    : 'text-gray-300'
+                "
+              >
+                star
+              </span>
+            </div>
+            <p class="text-xs text-gray-500">
+              Dựa trên
+              <span class="font-bold text-gray-800">{{ reviews.length }}</span>
+              lượt đánh giá
+            </p>
+          </div>
+
+          <!-- Right: Star breakdown progress bars -->
+          <div
+            class="md:col-span-8 space-y-2 border-t md:border-t-0 md:border-l border-blue-100/80 pt-4 md:pt-0 md:pl-6"
+          >
+            <div
+              v-for="star in [5, 4, 3, 2, 1]"
+              :key="star"
+              class="flex items-center gap-3 text-xs"
+            >
+              <div
+                class="flex items-center gap-1 w-12 font-medium text-gray-700 shrink-0"
+              >
+                <span>{{ star }}</span>
+                <span
+                  class="material-symbols-outlined text-sm fill text-amber-400"
+                  >star</span
+                >
+              </div>
+              <div
+                class="flex-grow h-2.5 bg-gray-200 rounded-full overflow-hidden"
+              >
+                <div
+                  class="h-full bg-amber-400 rounded-full transition-all duration-500"
+                  :style="{
+                    width: `${reviews.length > 0 ? (ratingCounts[star] / reviews.length) * 100 : 0}%`,
+                  }"
+                />
+              </div>
+              <span class="w-8 text-right text-[11px] text-gray-500 shrink-0">
+                {{ ratingCounts[star] }}
+              </span>
+            </div>
+          </div>
         </div>
 
         <div v-if="isReviewsLoading" class="flex justify-center py-8">
@@ -399,11 +564,15 @@ function handleBuyNow() {
                 <div
                   class="w-9 h-9 rounded-full bg-blue-100 text-[#0052cc] font-bold flex items-center justify-center text-xs"
                 >
-                  {{ (rev.user?.fullName || 'K').charAt(0).toUpperCase() }}
+                  {{
+                    (rev.user?.fullName || rev.customerName || 'K')
+                      .charAt(0)
+                      .toUpperCase()
+                  }}
                 </div>
                 <div>
                   <div class="text-xs font-bold text-gray-900">
-                    {{ rev.user?.fullName || 'Khách hàng' }}
+                    {{ rev.user?.fullName || rev.customerName || 'Khách hàng' }}
                   </div>
                   <div class="text-[11px] text-gray-400">
                     {{ new Date(rev.createdAt).toLocaleDateString('vi-VN') }}
@@ -411,13 +580,17 @@ function handleBuyNow() {
                 </div>
               </div>
 
-              <div class="flex text-[#FFB020]">
+              <!-- Review Star Rating -->
+              <div class="flex items-center gap-0.5">
                 <span
                   v-for="s in 5"
                   :key="s"
-                  class="material-symbols-outlined text-base fill"
+                  class="material-symbols-outlined text-base"
+                  :class="
+                    s <= rev.rating ? 'fill text-amber-400' : 'text-gray-300'
+                  "
                 >
-                  {{ s <= rev.rating ? 'star' : 'star_border' }}
+                  star
                 </span>
               </div>
             </div>
@@ -440,73 +613,127 @@ function handleBuyNow() {
       </section>
 
       <!-- Write Review Modal -->
-      <div
-        v-if="isReviewModalOpen"
-        class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
-      >
+      <Teleport to="body">
         <div
-          class="bg-white rounded-3xl p-6 md:p-8 max-w-md w-full shadow-2xl space-y-4"
+          v-if="isReviewModalOpen"
+          class="fixed inset-0 z-[99] flex items-center justify-center p-4"
         >
+          <!-- Backdrop Overlay -->
           <div
-            class="flex justify-between items-center border-b border-gray-100 pb-3"
-          >
-            <h3 class="text-base font-bold text-gray-900">Đánh giá sản phẩm</h3>
-            <button
-              class="text-gray-400 hover:text-gray-700 cursor-pointer"
-              @click="isReviewModalOpen = false"
-            >
-              <span class="material-symbols-outlined">close</span>
-            </button>
-          </div>
+            class="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
+            @click="isReviewModalOpen = false"
+          />
 
-          <div class="space-y-4">
-            <div>
-              <label class="block text-xs font-bold text-gray-700 mb-1"
-                >Mức độ hài lòng</label
+          <!-- Modal Dialog Content -->
+          <div
+            class="relative bg-white rounded-3xl p-6 md:p-8 max-w-md w-full shadow-2xl space-y-4 z-10"
+          >
+            <div
+              class="flex justify-between items-center border-b border-gray-100 pb-3"
+            >
+              <h3 class="text-base font-bold text-gray-900">
+                Đánh giá sản phẩm
+              </h3>
+              <button
+                type="button"
+                class="text-gray-400 hover:text-gray-700 cursor-pointer"
+                @click="isReviewModalOpen = false"
               >
-              <div class="flex gap-2 text-[#FFB020] cursor-pointer">
-                <button
-                  v-for="s in 5"
-                  :key="s"
-                  type="button"
-                  class="material-symbols-outlined text-3xl focus:outline-none"
-                  :class="{ fill: s <= newRating }"
-                  @click="newRating = s"
+                <span class="material-symbols-outlined">close</span>
+              </button>
+            </div>
+
+            <div class="space-y-4">
+              <div>
+                <label class="block text-xs font-bold text-gray-700 mb-1">
+                  Số điện thoại mua hàng <span class="text-red-500">*</span>
+                </label>
+                <input
+                  v-model="reviewerPhone"
+                  type="tel"
+                  placeholder="Nhập số điện thoại đã đặt mua hàng..."
+                  class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-xs outline-none focus:border-[#0052cc] focus:bg-white transition-colors text-gray-900"
+                />
+                <p class="text-[11px] text-gray-400 mt-1">
+                  * Chỉ khách hàng đã mua sản phẩm này mới được đánh giá (1 lần
+                  / mỗi lần mua).
+                </p>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-gray-700 mb-1">
+                  Họ và tên của bạn
+                </label>
+                <input
+                  v-model="reviewerName"
+                  type="text"
+                  placeholder="Nhập họ và tên hiển thị (tuỳ chọn)..."
+                  class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-xs outline-none focus:border-[#0052cc] focus:bg-white transition-colors text-gray-900"
+                />
+              </div>
+
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <label class="block text-xs font-bold text-gray-700">
+                    Mức độ hài lòng <span class="text-red-500">*</span>
+                  </label>
+                  <span class="text-xs font-semibold text-amber-600">
+                    {{ ratingLabels[hoverRating || newRating] }}
+                  </span>
+                </div>
+                <div
+                  class="flex items-center gap-1 py-1"
+                  @mouseleave="hoverRating = 0"
                 >
-                  star
-                </button>
+                  <button
+                    v-for="s in 5"
+                    :key="s"
+                    type="button"
+                    class="material-symbols-outlined text-3xl focus:outline-none cursor-pointer transition-transform hover:scale-110"
+                    :class="
+                      s <= (hoverRating || newRating)
+                        ? 'fill text-amber-400'
+                        : 'text-gray-300'
+                    "
+                    @mouseenter="hoverRating = s"
+                    @click="newRating = s"
+                  >
+                    star
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-gray-700 mb-1"
+                  >Nhận xét của bạn</label
+                >
+                <textarea
+                  v-model="newComment"
+                  rows="3"
+                  placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này..."
+                  class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-xs outline-none focus:border-[#0052cc] focus:bg-white transition-colors text-gray-900"
+                ></textarea>
               </div>
             </div>
 
-            <div>
-              <label class="block text-xs font-bold text-gray-700 mb-1"
-                >Nhận xét của bạn</label
-              >
-              <textarea
-                v-model="newComment"
-                rows="3"
-                placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này..."
-                class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-xs outline-none focus:border-[#0052cc] focus:bg-white transition-colors"
-              ></textarea>
-            </div>
-          </div>
-
-          <button
-            :disabled="isSubmittingReview || !newComment.trim()"
-            class="w-full bg-[#0052cc] text-white font-bold py-3 rounded-xl hover:bg-[#0040a2] transition-colors cursor-pointer shadow-md disabled:opacity-40 text-xs flex items-center justify-center gap-2"
-            @click="submitReview"
-          >
-            <span
-              v-if="isSubmittingReview"
-              class="animate-spin material-symbols-outlined text-sm"
-              >progress_activity</span
+            <button
+              type="button"
+              :disabled="isSubmittingReview || !reviewerPhone.trim()"
+              class="w-full bg-[#0052cc] text-white font-bold py-3 rounded-xl hover:bg-[#0040a2] transition-colors cursor-pointer shadow-md disabled:opacity-40 text-xs flex items-center justify-center gap-2"
+              @click="submitReview"
             >
-            <span>{{
-              isSubmittingReview ? 'Đang gửi...' : 'Gửi Đánh Giá'
-            }}</span>
-          </button>
+              <span
+                v-if="isSubmittingReview"
+                class="animate-spin material-symbols-outlined text-sm"
+                >progress_activity</span
+              >
+              <span>{{
+                isSubmittingReview ? 'Đang gửi...' : 'Gửi Đánh Giá'
+              }}</span>
+            </button>
+          </div>
         </div>
-      </div>
+      </Teleport>
     </div>
   </div>
 </template>

@@ -33,6 +33,19 @@ export function formatImageUrl(
  * Format toàn bộ ảnh trong một mảng ProductImage hoặc đối tượng chứa ProductImage
  */
 export function formatProductImages<T extends { imageUrl: string }>(
+  images: T[],
+  baseUrl?: string,
+): T[];
+export function formatProductImages(images: null, baseUrl?: string): null;
+export function formatProductImages(
+  images: undefined,
+  baseUrl?: string,
+): undefined;
+export function formatProductImages<T extends { imageUrl: string }>(
+  images?: T[] | null,
+  baseUrl?: string,
+): T[] | undefined | null;
+export function formatProductImages<T extends { imageUrl: string }>(
   images?: T[] | null,
   baseUrl?: string,
 ): T[] | undefined | null {

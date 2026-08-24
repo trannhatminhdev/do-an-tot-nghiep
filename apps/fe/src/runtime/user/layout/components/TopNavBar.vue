@@ -102,13 +102,24 @@ function handleCategoryClick(categoryId?: number) {
         </button>
       </nav>
 
-      <!-- Right Controls (Cart) -->
+      <!-- Right Controls -->
       <div class="flex items-center gap-3 flex-shrink-0">
+        <!-- Order Lookup Button -->
+        <NuxtLink
+          to="/orders"
+          class="p-2 text-gray-700 hover:text-[#0052cc] transition-colors rounded-full hover:bg-gray-100 relative cursor-pointer flex items-center justify-center"
+          aria-label="Tra cứu đơn hàng"
+          title="Tra cứu đơn hàng"
+        >
+          <span class="material-symbols-outlined">receipt_long</span>
+        </NuxtLink>
+
         <!-- Cart Button -->
         <NuxtLink
           to="/cart"
           class="p-2 text-gray-700 hover:text-[#0052cc] transition-colors rounded-full hover:bg-gray-100 relative cursor-pointer flex items-center justify-center"
           aria-label="Giỏ hàng"
+          title="Giỏ hàng"
         >
           <span class="material-symbols-outlined">shopping_cart</span>
           <span
@@ -157,6 +168,14 @@ function handleCategoryClick(categoryId?: number) {
         >
           {{ cat.name }}
         </button>
+        <NuxtLink
+          to="/orders"
+          class="text-left py-2.5 px-3 rounded-xl font-semibold text-xs text-gray-700 hover:bg-blue-50 hover:text-[#0052cc] transition-colors flex items-center gap-2"
+          @click="isMobileMenuOpen = false"
+        >
+          <span class="material-symbols-outlined text-base">receipt_long</span>
+          <span>Tra cứu đơn hàng</span>
+        </NuxtLink>
       </div>
     </div>
   </header>

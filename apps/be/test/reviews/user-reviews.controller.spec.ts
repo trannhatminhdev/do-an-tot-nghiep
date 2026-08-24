@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-assignment */
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserReviewsController } from '../../src/modules/reviews/presentation/http/user-reviews.controller';
 import { ReviewsService } from '../../src/modules/reviews/application/services/reviews.service';
@@ -31,14 +30,25 @@ describe('UserReviewsController', () => {
 
   describe('createReview', () => {
     it('should create a review', async () => {
-      const dto = { productId: 1, rating: 5, comment: 'Nice' };
-      const user = { id: 1 } as any;
+      const dto = {
+        productId: 1,
+        phone: '0912345678',
+        fullName: 'Minh',
+        rating: 5,
+        comment: 'Nice',
+      };
       const created = { id: 1, ...dto };
       service.createReview!.mockResolvedValue(created as any);
 
-      const result = await controller.createReview(dto, user);
+      const result = await controller.createReview(dto);
       expect(result).toEqual(created);
-      expect(service.createReview).toHaveBeenCalledWith(1, 1, 5, 'Nice');
+      expect(service.createReview).toHaveBeenCalledWith({
+        productId: 1,
+        phone: '0912345678',
+        fullName: 'Minh',
+        rating: 5,
+        comment: 'Nice',
+      });
     });
   });
 

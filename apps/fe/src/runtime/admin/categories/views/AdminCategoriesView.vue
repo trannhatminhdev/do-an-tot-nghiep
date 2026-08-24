@@ -241,94 +241,99 @@
     </div>
 
     <!-- Create / Edit Modal -->
-    <div
-      v-if="isModalOpen"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4"
-    >
+    <Teleport to="body">
       <div
-        class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs transition-opacity"
-        @click="closeModal"
-      />
-
-      <div
-        class="relative w-full max-w-md rounded-xl bg-white p-6 shadow-2xl transition-all"
+        v-if="isModalOpen"
+        class="fixed inset-0 z-[100] flex items-center justify-center p-4"
       >
         <div
-          class="flex items-center justify-between pb-4 border-b border-slate-100"
+          class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs transition-opacity"
+          @click="closeModal"
+        />
+
+        <div
+          class="relative w-full max-w-md rounded-xl bg-white p-6 shadow-2xl transition-all"
         >
-          <h3 class="text-lg font-bold text-[#003D9B]">
-            {{ editingCategory ? 'Chỉnh sửa danh mục' : 'Thêm danh mục mới' }}
-          </h3>
-          <button
-            type="button"
-            class="p-1 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-colors focus:outline-none"
-            @click="closeModal"
-          >
-            <svg
-              class="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-        </div>
-
-        <form class="mt-4 space-y-4" @submit.prevent="handleSaveCategory">
-          <div class="flex flex-col gap-1.5">
-            <label
-              for="category-name"
-              class="text-sm font-semibold text-[#434654]"
-            >
-              Tên danh mục <span class="text-red-500">*</span>
-            </label>
-            <input
-              id="category-name"
-              ref="nameInputRef"
-              v-model="formName"
-              type="text"
-              required
-              placeholder="Nhập tên danh mục (VD: Laptop, Điện thoại...)"
-              class="w-full rounded-lg border border-[#C3C6D6] bg-white px-3.5 py-2.5 text-sm text-[#1A1C1C] placeholder-[#737685] transition-colors focus:border-[#003D9B] focus:outline-none focus:ring-1 focus:ring-[#003D9B]"
-            />
-            <p v-if="formError" class="text-xs text-red-600 font-medium mt-0.5">
-              {{ formError }}
-            </p>
-          </div>
-
           <div
-            class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100"
+            class="flex items-center justify-between pb-4 border-b border-slate-100"
           >
+            <h3 class="text-lg font-bold text-[#003D9B]">
+              {{ editingCategory ? 'Chỉnh sửa danh mục' : 'Thêm danh mục mới' }}
+            </h3>
             <button
               type="button"
-              class="rounded-lg border border-[#C3C6D6] bg-white px-4 py-2 text-sm font-semibold text-[#434654] hover:bg-slate-50 transition-colors focus:outline-none"
+              class="p-1 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-colors focus:outline-none"
               @click="closeModal"
             >
-              Hủy
-            </button>
-            <button
-              type="submit"
-              :disabled="isSubmitting"
-              class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#003D9B] px-4 py-2 text-sm font-semibold text-white hover:bg-[#002f78] transition-colors disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none"
-            >
-              <span
-                v-if="isSubmitting"
-                class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent"
-              />
-              <span>{{
-                editingCategory ? 'Lưu thay đổi' : 'Tạo danh mục'
-              }}</span>
+              <svg
+                class="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
             </button>
           </div>
-        </form>
+
+          <form class="mt-4 space-y-4" @submit.prevent="handleSaveCategory">
+            <div class="flex flex-col gap-1.5">
+              <label
+                for="category-name"
+                class="text-sm font-semibold text-[#434654]"
+              >
+                Tên danh mục <span class="text-red-500">*</span>
+              </label>
+              <input
+                id="category-name"
+                ref="nameInputRef"
+                v-model="formName"
+                type="text"
+                required
+                placeholder="Nhập tên danh mục (VD: Laptop, Điện thoại...)"
+                class="w-full rounded-lg border border-[#C3C6D6] bg-white px-3.5 py-2.5 text-sm text-[#1A1C1C] placeholder-[#737685] transition-colors focus:border-[#003D9B] focus:outline-none focus:ring-1 focus:ring-[#003D9B]"
+              />
+              <p
+                v-if="formError"
+                class="text-xs text-red-600 font-medium mt-0.5"
+              >
+                {{ formError }}
+              </p>
+            </div>
+
+            <div
+              class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100"
+            >
+              <button
+                type="button"
+                class="rounded-lg border border-[#C3C6D6] bg-white px-4 py-2 text-sm font-semibold text-[#434654] hover:bg-slate-50 transition-colors focus:outline-none"
+                @click="closeModal"
+              >
+                Hủy
+              </button>
+              <button
+                type="submit"
+                :disabled="isSubmitting"
+                class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#003D9B] px-4 py-2 text-sm font-semibold text-white hover:bg-[#002f78] transition-colors disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none"
+              >
+                <span
+                  v-if="isSubmitting"
+                  class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent"
+                />
+                <span>{{
+                  editingCategory ? 'Lưu thay đổi' : 'Tạo danh mục'
+                }}</span>
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
+    </Teleport>
 
     <!-- Confirm Delete Modal -->
     <AppConfirmModal

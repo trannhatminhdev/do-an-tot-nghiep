@@ -14,6 +14,14 @@ export class CreateReviewDto {
   @Type(() => Number)
   productId: number;
 
+  @IsNotEmpty({ message: 'Số điện thoại không được để trống' })
+  @IsString()
+  phone: string;
+
+  @IsOptional()
+  @IsString()
+  fullName?: string;
+
   @IsNotEmpty()
   @IsNumber()
   @Min(1)

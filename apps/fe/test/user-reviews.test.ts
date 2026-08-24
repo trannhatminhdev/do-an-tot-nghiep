@@ -45,9 +45,11 @@ describe('UserReviewsService', () => {
     expect(result).toEqual(mockReviews);
   });
 
-  it('should create review with token header', async () => {
+  it('should create review with phone and optional token', async () => {
     const reviewInput = {
       productId: 1,
+      phone: '0912345678',
+      fullName: 'Nguyễn Văn A',
       rating: 5,
       comment: 'Sản phẩm rất tốt',
     };
@@ -55,6 +57,7 @@ describe('UserReviewsService', () => {
       id: 2,
       ...reviewInput,
       userId: 1,
+      orderId: 10,
       createdAt: '2026-01-01',
     };
 

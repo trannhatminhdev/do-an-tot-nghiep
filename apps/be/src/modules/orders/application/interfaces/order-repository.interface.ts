@@ -34,4 +34,8 @@ export interface IOrderRepository {
   findById(id: number): Promise<OrderWithItems | null>;
   updateStatus(id: number, status: string): Promise<OrderWithItems>;
   hasUserPurchasedProduct(userId: number, productId: number): Promise<boolean>;
+  findPurchasedOrdersByPhone(
+    phone: string,
+    productId: number,
+  ): Promise<Order[]>;
 }

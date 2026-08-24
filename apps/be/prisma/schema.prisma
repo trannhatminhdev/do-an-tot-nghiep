@@ -107,8 +107,9 @@ model Order {
   createdAt       DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
 
-  user  User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
-  items OrderItem[]
+  user    User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  items   OrderItem[]
+  reviews Review[]
 
   @@map("orders")
 }
@@ -139,16 +140,20 @@ model Voucher {
 }
 
 model Review {
-  id         Int      @id @default(autoincrement())
-  productId  Int      @map("product_id")
-  userId     Int      @map("user_id")
-  rating     Int // Note: 'Điểm 1 - 5'
-  comment    String?
-  adminReply String?  @map("admin_reply")
-  createdAt  DateTime @default(now()) @map("created_at")
+  id            Int      @id @default(autoincrement())
+  productId     Int      @map("product_id")
+  userId        Int?     @map("user_id")
+  orderId       Int?     @map("order_id")
+  customerPhone String?  @map("customer_phone")
+  customerName  String?  @map("customer_name")
+  rating        Int // Note: 'Điểm 1 - 5'
+  comment       String?
+  adminReply    String?  @map("admin_reply")
+  createdAt     DateTime @default(now()) @map("created_at")
 
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user    User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+  order   Order?  @relation(fields: [orderId], references: [id], onDelete: SetNull)
 
   @@map("reviews")
 }

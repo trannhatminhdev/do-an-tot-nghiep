@@ -40,6 +40,15 @@ const cartTotal = computed(() => {
     cartSubtotal.value + shippingFee.value - discountAmount.value,
   );
 });
+
+const hasInvalidStock = computed(() => {
+  return cart.value.some(
+    (item) =>
+      !item.product ||
+      item.product.stock <= 0 ||
+      item.quantity > item.product.stock,
+  );
+});
 </script>
 
 <template>
@@ -141,30 +150,46 @@ const cartTotal = computed(() => {
                   formatPrice(item.product.price)
                 }}</span>
 
-                <!-- Quantity Control -->
-                <div
-                  class="flex items-center bg-gray-50 rounded-xl border border-gray-200"
-                >
-                  <button
-                    class="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-[#0052cc] active:bg-gray-200 rounded-l-xl cursor-pointer"
-                    aria-label="Giảm số lượng"
-                    @click="updateQuantity(idx, -1)"
+                <!-- Quantity Control & Stock Warning -->
+                <div class="flex flex-col gap-1 items-end">
+                  <div
+                    class="flex items-center bg-gray-50 rounded-xl border border-gray-200"
                   >
-                    <span class="material-symbols-outlined text-sm"
-                      >remove</span
+                    <button
+                      class="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-[#0052cc] active:bg-gray-200 rounded-l-xl cursor-pointer"
+                      aria-label="Giảm số lượng"
+                      @click="updateQuantity(idx, -1)"
                     >
-                  </button>
+                      <span class="material-symbols-outlined text-sm"
+                        >remove</span
+                      >
+                    </button>
+                    <span
+                      class="w-8 text-center font-bold text-xs text-gray-900"
+                      >{{ item.quantity }}</span
+                    >
+                    <button
+                      :disabled="item.quantity >= item.product.stock"
+                      class="w-8 h-8 flex items-center justify-center text-[#0052cc] active:bg-gray-200 rounded-r-xl cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+                      aria-label="Tăng số lượng"
+                      @click="updateQuantity(idx, 1)"
+                    >
+                      <span class="material-symbols-outlined text-sm">add</span>
+                    </button>
+                  </div>
+
                   <span
-                    class="w-8 text-center font-bold text-xs text-gray-900"
-                    >{{ item.quantity }}</span
+                    v-if="item.product.stock <= 0"
+                    class="text-[11px] font-bold text-red-500"
                   >
-                  <button
-                    class="w-8 h-8 flex items-center justify-center text-[#0052cc] active:bg-gray-200 rounded-r-xl cursor-pointer"
-                    aria-label="Tăng số lượng"
-                    @click="updateQuantity(idx, 1)"
+                    Hết hàng
+                  </span>
+                  <span
+                    v-else-if="item.quantity >= item.product.stock"
+                    class="text-[11px] font-medium text-amber-600"
                   >
-                    <span class="material-symbols-outlined text-sm">add</span>
-                  </button>
+                    Tối đa {{ item.product.stock }} sp
+                  </span>
                 </div>
               </div>
             </div>
@@ -283,14 +308,36 @@ const cartTotal = computed(() => {
           </div>
         </div>
 
+        <div
+          v-if="hasInvalidStock"
+          class="bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl p-3 flex items-start gap-2"
+        >
+          <span class="material-symbols-outlined text-base shrink-0 mt-0.5"
+            >error</span
+          >
+          <span
+            >Có sản phẩm trong giỏ hàng đã hết hàng hoặc vượt quá tồn kho. Vui
+            lòng điều chỉnh trước khi thanh toán.</span
+          >
+        </div>
+
         <!-- Checkout Button -->
         <NuxtLink
+          v-if="!hasInvalidStock"
           to="/checkout"
           class="w-full bg-[#0052cc] hover:bg-[#0040a2] text-white font-bold text-sm py-3.5 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98"
         >
           <span class="material-symbols-outlined text-base">lock</span>
           Tiến Hành Thanh Toán
         </NuxtLink>
+        <button
+          v-else
+          disabled
+          class="w-full bg-gray-300 text-gray-500 font-bold text-sm py-3.5 rounded-2xl flex items-center justify-center gap-2 cursor-not-allowed"
+        >
+          <span class="material-symbols-outlined text-base">lock</span>
+          Tiến Hành Thanh Toán
+        </button>
       </div>
     </div>
   </div>
