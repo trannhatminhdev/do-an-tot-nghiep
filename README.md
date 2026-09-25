@@ -1,4 +1,4 @@
-# AI Commerce Template
+# Dồ án tốt nghiệp
 
 Monorepo template thương mại điện tử hoàn chỉnh với **NestJS Backend** (Hexagonal Architecture) và **Nuxt Module Frontend** (Vue 3 Composition API & Tailwind CSS).
 
